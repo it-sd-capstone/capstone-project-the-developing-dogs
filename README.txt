@@ -38,8 +38,11 @@ This project can be validated using both manual testing and Unity’s Play Mode.
 1. Open the project in Unity.
 2. Press the "Play" button in the Unity Editor.
 3. Verify the following:
-
-   * Game loads without errors
+	Click on "Console"
+	Debug.log should display three messages:
+		"City connection system is working."
+		"Infection system is working."
+		"Turn system is working."
 
 ### Debugging
 
