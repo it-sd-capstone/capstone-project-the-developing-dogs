@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Chicago
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Chicago
+  color: {r: 0, g: 0, b: 1, a: 0}
+  neighbors:
+  - {fileID: 11400000, guid: 40310006462fc4845bd19c4388a7b1e7, type: 2}
+  - {fileID: 11400000, guid: cb4696c88e83e0c4ea9e10758e1abf87, type: 2}
+  - {fileID: 11400000, guid: b61ab153426f5ca42ac7c44b58614e9d, type: 2}
+  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
+  - {fileID: 11400000, guid: 7420ec38866f54f4c9796e64890911c6, type: 2}
+  position: {x: 0, y: 0}

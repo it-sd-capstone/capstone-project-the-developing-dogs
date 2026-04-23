@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Johannesburg
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Johannesburg
+  color: {r: 1, g: 1, b: 0, a: 1}
+  neighbors:
+  - {fileID: 11400000, guid: 0f69f5eaf28b0194a9d53a5fafdf9e1e, type: 2}
+  - {fileID: 11400000, guid: 36ce51406ade1014b8cf7c7835c539fe, type: 2}
+  position: {x: 0, y: 0}
