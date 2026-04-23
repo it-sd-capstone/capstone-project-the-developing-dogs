@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Sydney
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Sydney
+  color: {r: 1, g: 0, b: 0, a: 1}
+  neighbors:
+  - {fileID: 11400000, guid: b61ab153426f5ca42ac7c44b58614e9d, type: 2}
+  - {fileID: 11400000, guid: c621ceb18be32fc4e95ec68031c01f75, type: 2}
+  - {fileID: 11400000, guid: 78a0315e1cea5634d8767d14d9fcd84b, type: 2}
+  position: {x: 0, y: 0}

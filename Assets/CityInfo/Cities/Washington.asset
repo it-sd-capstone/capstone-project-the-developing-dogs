@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Washington
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Washington
+  color: {r: 0, g: 0, b: 1, a: 1}
+  neighbors:
+  - {fileID: 11400000, guid: 666423308cf42e642adbec088600a3bc, type: 2}
+  - {fileID: 11400000, guid: 7420ec38866f54f4c9796e64890911c6, type: 2}
+  - {fileID: 11400000, guid: cb4696c88e83e0c4ea9e10758e1abf87, type: 2}
+  - {fileID: 11400000, guid: f7ec4f86d7aeb2b4d96594ae2059362b, type: 2}
+  position: {x: 0, y: 0}

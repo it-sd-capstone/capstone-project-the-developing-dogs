@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Baghdad
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Baghdad
+  color: {r: 0, g: 0, b: 0, a: 0}
+  neighbors:
+  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
+  - {fileID: 11400000, guid: e92025102af31734294036f3490e51aa, type: 2}
+  - {fileID: 11400000, guid: 0f2975ae00d1e0e4085f056810b98f57, type: 2}
+  - {fileID: 11400000, guid: df055b77f5fa94844ac5869cbe02b4e1, type: 2}
+  - {fileID: 11400000, guid: 9e56151e719ff0349b07078eee9c2a4b, type: 2}
+  position: {x: 0, y: 0}
