@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Role for the Researcher.
+// This role is meant to help with sharing knowledge between players.
 public class ResearcherRole : Role
 {
     public ResearcherRole()
