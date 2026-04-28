@@ -32,7 +32,7 @@ To run this project, you will need the following dependencies installed:
 5. Open the main scene:
 
    ```
-   Assets/Scenes/SampleScene.unity
+   Assets/Scenes/Main Menu.unity
    ```
 
 ---
@@ -79,7 +79,7 @@ To run the project:
 2. Open the main scene:
 
    ```
-   Assets/Scenes/SampleScene.unity
+   Assets/Scenes/MainMenu.unity
    ```
 3. Press the **Play** button in the Unity Editor.
 
