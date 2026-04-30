@@ -1,106 +1,111 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
-// Controls the main board-related logic such as movement, infection, outbreaks, and research stations.
 public class GameBoard : MonoBehaviour
 {
-    // Keeps track of which cities currently have research stations.
-    public List<City> researchStations = new List<City>();
-
-    // Events that other scripts can listen to when something important happens on the board.
     public System.Action<City> OnCityInfected;
     public System.Action<City> OnOutbreak;
     public System.Action<City> OnResearchStationBuilt;
 
-    // Lookup table for finding cities by name.
-    public Dictionary<string, City> cityLookup = new Dictionary<string, City>();
+    public List<City> cities;
+    public Dictionary<string, City> cityLookup;
+    private HashSet<City> outbreaked;
+    public Dictionary<Color, int> cubePool;
 
-    // Tracks the number of outbreaks before the game ends.
     public int outbreakCounter = 0;
     public int maxOutbreaks = 8;
 
-    // Used during an outbreak chain so the same city does not outbreak more than once.
-    private HashSet<City> outbreaked = new HashSet<City>();
+    public int researchStationCount = 6;
 
-    // Builds a research station in the selected city if it does not already have one.
-    public void BuildResearchStation(City city)
+    public void init()
     {
-        if (city == null)
-            return;
+        outbreakCounter = 0;
 
-        if (!researchStations.Contains(city))
+        cubePool = new Dictionary<Color, int>()
         {
-            researchStations.Add(city);
-            city.hasResearchStation = true;
-            OnResearchStationBuilt?.Invoke(city);
-        }
-    }
+            { Color.blue, 24},
+            { Color.yellow, 24},
+            { Color.black, 24},
+            { Color.red, 24}
+        };
 
-    // Checks if the player can move from one city to another based on neighbors.
-    public bool canMove(City from, City to)
-    {
-        if (from == null || to == null || from.neighbors == null)
-            return false;
-
-        return from.neighbors.Contains(to);
-    }
-
-    // Infects each city in the list during the infection phase.
-    public void InfectionPhase(List<City> infections)
-    {
-        if (infections == null)
-            return;
-
-        foreach (var city in infections)
+        cityLookup = new Dictionary<string, City>();
+        foreach (var city in cities)
         {
-            if (city != null)
+            city.infectionLevels = new Dictionary<Color, int>()
             {
-                InfectCity(city, city.diseaseType);
+                {Color.blue, 0},
+                { Color.yellow, 0},
+                { Color.black, 0},
+                { Color.red, 0}
+            };
+
+            if (city.neighbors == null)
+            {
+                city.neighbors = new List<City>();
+
+                cityLookup[city.cityName] = city;
+            }
+
+            if (city.cityName == "Atlanta")
+            {
+                city.hasResearchStation = true;
             }
         }
+
+        // TODO: integrate initial infections code
+
     }
 
-    // Adds a disease cube to a city and checks if an outbreak should happen.
-    public void InfectCity(City city, DiseaseColor diseaseColor)
+    public bool canMove(City from, City to)
     {
-        if (city == null)
-            return;
-
-        city.AddCube(diseaseColor);
-        OnCityInfected?.Invoke(city);
-
-        // If a city has more than 3 cubes, an outbreak is triggered.
-        if (city.GetCubeCount(diseaseColor) > 3)
+        return from.neighbors.Contains(to);
+    }
+    
+    public void InfectionPhase(List<City> infections)
+    {
+        foreach(var city in infections)
         {
-            TriggerOutbreak(city, diseaseColor);
+            InfectCity(city, city.diseaseColor);
         }
     }
 
-    // Handles outbreak logic and spreads infection to neighboring cities.
-    public void TriggerOutbreak(City city, DiseaseColor diseaseColor)
+    public void InfectCity(City city, Color disease)
     {
-        if (city == null)
-            return;
+        city.infectionLevels.Add(disease, city.infectionLevels.Count);
 
-        // Prevents the same city from outbreaking multiple times in one chain reaction.
-        if (outbreaked.Contains(city))
-            return;
-
-        outbreakCounter++;
-
-        if (outbreakCounter >= maxOutbreaks)
+        if (city.infectionLevels.Count > 3)
         {
-            // End game logic can be added here later.
+            
+            TriggerOutbreak(city, disease);
+        }
+    }
+
+    public void TriggerOutbreak(City city, Color groundZeroColor)
+    {
+        if(outbreaked.Contains(city)) return;
+        outbreakCounter++;
+        
+        if(outbreakCounter >= maxOutbreaks)
+        {
+            // end game logic
         }
 
         outbreaked.Add(city);
-
-        foreach (var neighbor in city.neighbors)
+        foreach(var neigbor in city.neighbors)
         {
-            InfectCity(neighbor, diseaseColor);
+            InfectCity(neigbor, groundZeroColor);
         }
 
-        OnOutbreak?.Invoke(city);
+        OnOutbreak(city);
         outbreaked.Clear();
+    }
+
+    public void BuildResearchStation(City city)
+    {
+        if (city.hasResearchStation) return;
+
     }
 }
