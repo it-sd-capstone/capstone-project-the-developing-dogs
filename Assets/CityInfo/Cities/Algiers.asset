@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Algiers
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Algiers
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 41622dde1b198dd4cb64e830655ebe29, type: 2}
-  - {fileID: 11400000, guid: ce347d7b582106d49885074ad71532f3, type: 2}
-  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
-  - {fileID: 11400000, guid: e92025102af31734294036f3490e51aa, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: bce9f216d9a2484439f479865fd4a213, type: 2}
+  - {fileID: 11400000, guid: 6ba980593d17b9a43bc1aa18bf30ae54, type: 2}
+  - {fileID: 11400000, guid: a22e65cbd3994134da202cde43f68b3c, type: 2}
+  - {fileID: 11400000, guid: 925e747a1b58e9643b3f00ed5ca2ca40, type: 2}
+  position: {x: 941, y: 643}

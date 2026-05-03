@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Chicago
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Chicago
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 40310006462fc4845bd19c4388a7b1e7, type: 2}
-  - {fileID: 11400000, guid: cb4696c88e83e0c4ea9e10758e1abf87, type: 2}
-  - {fileID: 11400000, guid: b61ab153426f5ca42ac7c44b58614e9d, type: 2}
-  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
-  - {fileID: 11400000, guid: 7420ec38866f54f4c9796e64890911c6, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 6f68ebe767b644043acd7c3ade9b9292, type: 2}
+  - {fileID: 11400000, guid: edcc39dfe51bf4944ae4672e178b8672, type: 2}
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  - {fileID: 11400000, guid: 00fa2792ff8e3584db95efcaec44c3f0, type: 2}
+  - {fileID: 11400000, guid: b0e368031f03ad142b57acadaa613506, type: 2}
+  position: {x: 291, y: 758}

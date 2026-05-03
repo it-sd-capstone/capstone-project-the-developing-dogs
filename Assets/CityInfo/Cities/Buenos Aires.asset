@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Buenos Aires
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Buenos Aires
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 5048f88dbbab1744b8b43f6cd9de6ea3, type: 2}
-  - {fileID: 11400000, guid: 97bef21cbaa9c8043b94dd1232ae4bd2, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: c6d56310ad8983c438e4d22ae7f8fdd3, type: 2}
+  position: {x: 539, y: 249}

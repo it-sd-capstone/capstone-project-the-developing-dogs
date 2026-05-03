@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Sao Paulo
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Sao Paulo
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 41622dde1b198dd4cb64e830655ebe29, type: 2}
-  - {fileID: 11400000, guid: 5048f88dbbab1744b8b43f6cd9de6ea3, type: 2}
-  - {fileID: 11400000, guid: b2483ac8487952647a28be005dcded22, type: 2}
-  - {fileID: 11400000, guid: 9bfec5c3b7eb62543ad5908c39841cb5, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: bce9f216d9a2484439f479865fd4a213, type: 2}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: 5a15dfabde48a6a4e981bb58f1161554, type: 2}
+  - {fileID: 11400000, guid: 17fd61b8f403bb140a0d2b3aa977ee20, type: 2}
+  position: {x: 623, y: 333}

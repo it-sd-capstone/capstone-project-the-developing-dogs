@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Jakarta
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Jakarta
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 74748714af923a541a6ccd8dd686e89d, type: 2}
-  - {fileID: 11400000, guid: 2b26e89f688a9bc48843deb14b16155c, type: 2}
-  - {fileID: 11400000, guid: 2cd3ed5a4cd12504f92a643075a4de8b, type: 2}
-  - {fileID: 11400000, guid: 58d7151986925954ab8f7a29c1265ee3, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 350f9bb3b6381a54fb5a6e89e2f128a9, type: 2}
+  - {fileID: 11400000, guid: e6d711ab65af1554684c519a04d71422, type: 2}
+  - {fileID: 11400000, guid: 4dde26435a552674fb2e819e69172a74, type: 2}
+  - {fileID: 11400000}
+  position: {x: 1522, y: 382}

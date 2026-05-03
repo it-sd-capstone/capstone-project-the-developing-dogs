@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Moscow
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Moscow
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 8bdaa192a2d26b94298c5567104ad20a, type: 2}
-  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
-  - {fileID: 11400000, guid: 9e56151e719ff0349b07078eee9c2a4b, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 5fff5bda00a48244ebc83c3dc800d762, type: 2}
+  - {fileID: 11400000, guid: a22e65cbd3994134da202cde43f68b3c, type: 2}
+  - {fileID: 11400000, guid: ed8c1f366e8a777409489e409a0c9be6, type: 2}
+  position: {x: 1175, y: 781}

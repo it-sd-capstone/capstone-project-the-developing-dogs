@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: London
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: London
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 666423308cf42e642adbec088600a3bc, type: 2}
-  - {fileID: 11400000, guid: 41622dde1b198dd4cb64e830655ebe29, type: 2}
-  - {fileID: 11400000, guid: ce347d7b582106d49885074ad71532f3, type: 2}
-  - {fileID: 11400000, guid: 0df8495706b0d7b4f84e98857b3fe96f, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 0bfd8cccba11714479bd66dacf0b9063, type: 2}
+  - {fileID: 11400000, guid: bce9f216d9a2484439f479865fd4a213, type: 2}
+  - {fileID: 11400000, guid: 6ba980593d17b9a43bc1aa18bf30ae54, type: 2}
+  - {fileID: 11400000, guid: 5bb1734090da0cf46ac21081e816ce8f, type: 2}
+  position: {x: 804, y: 812}

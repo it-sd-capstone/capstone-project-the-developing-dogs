@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Tokyo
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Tokyo
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 105ee7ca07aa69649ac2105394462ebe, type: 2}
-  - {fileID: 11400000, guid: ffce3d6bd594a0f4784171190f0211eb, type: 2}
-  - {fileID: 11400000, guid: 5c23dfac020a81149b82fc4a45cef526, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 6f68ebe767b644043acd7c3ade9b9292, type: 2}
+  - {fileID: 11400000, guid: aa566aadd3440884a8c27ccd1d93e65b, type: 2}
+  - {fileID: 11400000, guid: bd4ea4626be40b3429ea633c54c42d66, type: 2}
+  - {fileID: 11400000, guid: e3e46589767a42e478beea9d8e846f80, type: 2}
+  position: {x: 1812, y: 718}

@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Paris
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Paris
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 0df8495706b0d7b4f84e98857b3fe96f, type: 2}
-  - {fileID: 11400000, guid: 75ec256c00bc1964087578ca1a555773, type: 2}
-  - {fileID: 11400000, guid: 90b68cf1d6a8b014d8d23f26079fbde8, type: 2}
-  - {fileID: 11400000, guid: 41622dde1b198dd4cb64e830655ebe29, type: 2}
-  - {fileID: 11400000, guid: 70790f006eded034f82867dda8f34c88, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 5bb1734090da0cf46ac21081e816ce8f, type: 2}
+  - {fileID: 11400000, guid: 31eb7e48fca949245a8b1dd863a6b2bc, type: 2}
+  - {fileID: 11400000, guid: bce9f216d9a2484439f479865fd4a213, type: 2}
+  - {fileID: 11400000, guid: 5c0d5942a279fef488f68d7e7b86fd5f, type: 2}
+  - {fileID: 11400000, guid: 5dbd74f870bc28b49b3d1b796af2814e, type: 2}
+  position: {x: 908, y: 759}

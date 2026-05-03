@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Bogota
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Bogota
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: f7ec4f86d7aeb2b4d96594ae2059362b, type: 2}
-  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
-  - {fileID: 11400000, guid: 2ab917267c842774fb68ac06fb6d6ecd, type: 2}
-  - {fileID: 11400000, guid: b2483ac8487952647a28be005dcded22, type: 2}
-  - {fileID: 11400000, guid: 97bef21cbaa9c8043b94dd1232ae4bd2, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: c66e725ad22474f40a5005bcf35b85af, type: 2}
+  - {fileID: 11400000, guid: c6d56310ad8983c438e4d22ae7f8fdd3, type: 2}
+  - {fileID: 11400000, guid: 17fd61b8f403bb140a0d2b3aa977ee20, type: 2}
+  - {fileID: 11400000, guid: 592e7890c1ee3334bb1783500501b4d4, type: 2}
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  position: {x: 422, y: 470}

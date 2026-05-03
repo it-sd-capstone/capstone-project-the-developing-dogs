@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Osaka
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Osaka
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: a49e36edd4bd3344393e0b5473aab2da, type: 2}
-  - {fileID: 11400000, guid: a31d213897f21ba46abe2bafb8811f8c, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 2c3271d507f666647b1b78042f7ab89b, type: 2}
+  - {fileID: 11400000, guid: b33e16e02e788614898748ff1392ed4f, type: 2}
+  position: {x: 1824, y: 632}

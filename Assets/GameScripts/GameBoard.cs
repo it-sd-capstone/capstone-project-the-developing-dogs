@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour
@@ -9,61 +13,61 @@ public class GameBoard : MonoBehaviour
     public System.Action<City> OnOutbreak;
     public System.Action<City> OnResearchStationBuilt;
 
-    public List<City> cities;
-    public Dictionary<string, City> cityLookup;
-    private HashSet<City> outbreaked;
-    public Dictionary<Color, int> cubePool;
+    public List<City> cities = new List<City>();
+    public Dictionary<string, City> cityLookup = new Dictionary<string, City>();
+    public Dictionary<DiseaseColor, int> cubePool = new Dictionary<DiseaseColor, int>();
+    public Dictionary<DiseaseColor, bool> curePool = new Dictionary<DiseaseColor, bool>();
 
     public int outbreakCounter = 0;
     public int maxOutbreaks = 8;
-
     public int researchStationCount = 6;
+        
+    [Header("City database")]
+    [SerializeField] private CityDB citiesDB;
 
-    public void init()
+    private void Awake()
     {
-        outbreakCounter = 0;
-
-        cubePool = new Dictionary<Color, int>()
+        foreach (DiseaseColor color in Enum.GetValues(typeof(DiseaseColor)))
         {
-            { Color.blue, 24},
-            { Color.yellow, 24},
-            { Color.black, 24},
-            { Color.red, 24}
-        };
+            cubePool[color] = 24;
+            curePool[color] = false;
+        }
+        GenerateCities();
+    }
 
-        cityLookup = new Dictionary<string, City>();
-        foreach (var city in cities)
+    private void GenerateCities()
+    {
+        foreach(CityData data in citiesDB.cities)
         {
-            city.infectionLevels = new Dictionary<Color, int>()
-            {
-                {Color.blue, 0},
-                { Color.yellow, 0},
-                { Color.black, 0},
-                { Color.red, 0}
-            };
-
-            if (city.neighbors == null)
-            {
-                city.neighbors = new List<City>();
-
-                cityLookup[city.cityName] = city;
-            }
-
-            if (city.cityName == "Atlanta")
-            {
-                city.hasResearchStation = true;
-            }
+            City city = new City();
+            city.Init(data);
+            cities.Add(city);
         }
 
-        // TODO: integrate initial infections code
+        BuildCityLookup();
 
+        foreach(CityData cityData in citiesDB.cities)
+        {
+            City city = cityLookup[cityData.cityName];
+            foreach (var neighbor in cityData.neighbors)
+            {
+                if (cityLookup.TryGetValue(neighbor.cityName, out City n))
+                {
+                    city.neighbors.Add(cityLookup[n.cityName]);
+                }
+            }
+        }
     }
 
-    public bool canMove(City from, City to)
+    private void BuildCityLookup()
     {
-        return from.neighbors.Contains(to);
+        cityLookup.Clear();
+        foreach (var city in cities)
+        {
+            cityLookup[city.cityName] = city;
+        }
     }
-    
+
     public void InfectionPhase(List<City> infections)
     {
         foreach(var city in infections)
@@ -72,40 +76,89 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void InfectCity(City city, Color disease)
+    public void InfectCity(City city, DiseaseColor disease, HashSet<City> outbreakChain = null)
     {
-        city.infectionLevels.Add(disease, city.infectionLevels.Count);
+        if(IsEradicated(disease)) return;
 
-        if (city.infectionLevels.Count > 3)
+        if (cubePool[disease] <= 0)
         {
-            
-            TriggerOutbreak(city, disease);
+            Debug.Log("No more disease cubes. You lose.");
+            return; //TODO: put game end here instead of return.
         }
+
+        int currentCubes = city.GetDiseaseCount(disease);
+
+        if (currentCubes >= 3)
+        {
+            TriggerOutbreak(city, disease, outbreakChain);
+        } else
+        {
+            city.addCube(disease);
+            cubePool[disease]--;
+            OnCityInfected?.Invoke(city);
+        }
+
     }
 
-    public void TriggerOutbreak(City city, Color groundZeroColor)
+    private void TriggerOutbreak(City city, DiseaseColor groundZeroColor, HashSet<City> outbreakChain)
     {
-        if(outbreaked.Contains(city)) return;
+        if(outbreakChain == null) outbreakChain = new HashSet<City>();
+
+        if(outbreakChain.Contains(city)) return;
+        outbreakChain.Add(city);
+
         outbreakCounter++;
+        // OnOutbreak?.Invoke();
         
         if(outbreakCounter >= maxOutbreaks)
         {
-            // end game logic
+            Debug.Log("Too many outbreaks. You lose.");
+            //loss code here
+            return;
         }
 
-        outbreaked.Add(city);
-        foreach(var neigbor in city.neighbors)
+        foreach(var neighbor in city.neighbors)
+            InfectCity(neighbor, groundZeroColor, outbreakChain);
+    }
+
+    public void RemoveDisease(City city, DiseaseColor color)
+    {
+        if(city.GetDiseaseCount(color) > 0)
         {
-            InfectCity(neigbor, groundZeroColor);
+            city.removeCube(color);
+            cubePool[color]++;
         }
+    }
 
-        OnOutbreak(city);
-        outbreaked.Clear();
+    public void CureDisease(DiseaseColor color)
+    {
+        if(curePool[color]) return;
+        curePool[color] = true;
+    }
+
+    public bool canMove(City from, City to) => from.IsConnectedTo(to);
+    
+    
+    public bool IsEradicated(DiseaseColor color)
+    {
+        if(!curePool[color]) return false;
+        int totalCubes = cities.Sum(c => c.GetDiseaseCount(color));
+        return totalCubes == 0;
     }
 
     public void BuildResearchStation(City city)
     {
-        if (city.hasResearchStation) return;
+        if (city.hasResearchStation || researchStationCount <= 1) return;
+        city.BuildResearchStation();
+        researchStationCount -= 1;
+        OnResearchStationBuilt?.Invoke(city);
+    }
 
+    public bool CheckWin()
+    { 
+        foreach(DiseaseColor color in Enum.GetValues(typeof(DiseaseColor)))
+            if(!curePool[color])
+                if(!curePool[color]) return false;
+            return true;
     }
 }

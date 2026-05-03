@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
   m_Name: St. Petersburg
   m_EditorClassIdentifier: Assembly-CSharp::CityData
-  cityName: St Petersburg
+  cityName: St. Petersburg
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 00b60507570632b419f491c44aeb02db, type: 2}
-  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
-  - {fileID: 11400000, guid: 0df8495706b0d7b4f84e98857b3fe96f, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 0bc74b58ab95a1146a724e912536ebeb, type: 2}
+  - {fileID: 11400000, guid: a22e65cbd3994134da202cde43f68b3c, type: 2}
+  - {fileID: 11400000, guid: 5bb1734090da0cf46ac21081e816ce8f, type: 2}
+  position: {x: 1098, y: 857}

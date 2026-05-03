@@ -13,8 +13,7 @@ public class BoardManagerTests
         board = new GameBoard();
         board.cities = new List<City>()
         {
-            new City {cityName = "Atlanta", diseaseColor = Color.blue},
-            new City {cityName = "Chicago", diseaseColor = Color.blue}
+
         };
     }
 }

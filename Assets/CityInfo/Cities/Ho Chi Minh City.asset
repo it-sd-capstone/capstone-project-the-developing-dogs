@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Ho Chi Minh City
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Ho Chi Minh City
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 78a0315e1cea5634d8767d14d9fcd84b, type: 2}
-  - {fileID: 11400000, guid: 2b26e89f688a9bc48843deb14b16155c, type: 2}
-  - {fileID: 11400000, guid: a5bc226c9685cfd41bec4c3c46c470fa, type: 2}
-  - {fileID: 11400000, guid: c621ceb18be32fc4e95ec68031c01f75, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: a1ea7c8c79a12094abaf86f705ebd631, type: 2}
+  - {fileID: 11400000, guid: 85c76b6349bda3d4f8c7220b672298d3, type: 2}
+  - {fileID: 11400000, guid: 6108fad545074d449a02fa28546650bf, type: 2}
+  - {fileID: 11400000, guid: e6d711ab65af1554684c519a04d71422, type: 2}
+  position: {x: 1608, y: 453}

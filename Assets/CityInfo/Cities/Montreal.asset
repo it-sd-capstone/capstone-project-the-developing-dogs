@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Montreal
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Montreal
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 666423308cf42e642adbec088600a3bc, type: 2}
-  - {fileID: 11400000, guid: e6840e04a918b9842a7bcdb559bdef5a, type: 2}
-  - {fileID: 11400000, guid: 0aac27a8b324b8f4da3a3da30183ff57, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 5ca6ee019242fcb42a256d347b82b241, type: 2}
+  - {fileID: 11400000, guid: 888b7894e597f1b43a1bc77a379d4976, type: 2}
+  - {fileID: 11400000, guid: 0bfd8cccba11714479bd66dacf0b9063, type: 2}
+  position: {x: 434, y: 761}

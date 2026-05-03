@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Milan
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Milan
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 0df8495706b0d7b4f84e98857b3fe96f, type: 2}
-  - {fileID: 11400000, guid: ce347d7b582106d49885074ad71532f3, type: 2}
-  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: a22e65cbd3994134da202cde43f68b3c, type: 2}
+  - {fileID: 11400000, guid: 5bb1734090da0cf46ac21081e816ce8f, type: 2}
+  - {fileID: 11400000, guid: 6ba980593d17b9a43bc1aa18bf30ae54, type: 2}
+  position: {x: 1002, y: 781}

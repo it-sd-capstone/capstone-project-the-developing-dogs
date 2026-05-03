@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Los Angeles
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Los Angeles
-  color: {r: 1, g: 0.99607843, b: 0, a: 0}
+  diseaseColor: 2
+  color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 58d7151986925954ab8f7a29c1265ee3, type: 2}
-  - {fileID: 11400000, guid: 40310006462fc4845bd19c4388a7b1e7, type: 2}
-  - {fileID: 11400000, guid: 0aac27a8b324b8f4da3a3da30183ff57, type: 2}
-  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 85c76b6349bda3d4f8c7220b672298d3, type: 2}
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  - {fileID: 11400000, guid: 6f68ebe767b644043acd7c3ade9b9292, type: 2}
+  - {fileID: 11400000, guid: 5ca6ee019242fcb42a256d347b82b241, type: 2}
+  position: {x: 135, y: 604}

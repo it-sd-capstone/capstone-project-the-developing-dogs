@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Miami
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Miami
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 5048f88dbbab1744b8b43f6cd9de6ea3, type: 2}
-  - {fileID: 11400000, guid: cb4696c88e83e0c4ea9e10758e1abf87, type: 2}
-  - {fileID: 11400000, guid: e6840e04a918b9842a7bcdb559bdef5a, type: 2}
-  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  - {fileID: 11400000, guid: 00fa2792ff8e3584db95efcaec44c3f0, type: 2}
+  - {fileID: 11400000, guid: 888b7894e597f1b43a1bc77a379d4976, type: 2}
+  position: {x: 434, y: 586}

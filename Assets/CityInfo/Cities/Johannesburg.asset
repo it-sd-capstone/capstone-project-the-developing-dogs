@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Johannesburg
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Johannesburg
-  color: {r: 1, g: 1, b: 0, a: 1}
+  diseaseColor: 2
+  color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 0f69f5eaf28b0194a9d53a5fafdf9e1e, type: 2}
-  - {fileID: 11400000, guid: 36ce51406ade1014b8cf7c7835c539fe, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 86e2f6f46ec53e54eb4a2391ce7d8a97, type: 2}
+  - {fileID: 11400000, guid: b19ff7f299ad183418d197874b2865f4, type: 2}
+  position: {x: 1063, y: 301}

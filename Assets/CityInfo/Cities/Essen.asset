@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Essen
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Essen
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 70790f006eded034f82867dda8f34c88, type: 2}
-  - {fileID: 11400000, guid: ce347d7b582106d49885074ad71532f3, type: 2}
-  - {fileID: 11400000, guid: 75ec256c00bc1964087578ca1a555773, type: 2}
-  - {fileID: 11400000, guid: 8bdaa192a2d26b94298c5567104ad20a, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 31eb7e48fca949245a8b1dd863a6b2bc, type: 2}
+  - {fileID: 11400000, guid: 6ba980593d17b9a43bc1aa18bf30ae54, type: 2}
+  - {fileID: 11400000, guid: 5dbd74f870bc28b49b3d1b796af2814e, type: 2}
+  - {fileID: 11400000, guid: ed8c1f366e8a777409489e409a0c9be6, type: 2}
+  position: {x: 942, y: 834}

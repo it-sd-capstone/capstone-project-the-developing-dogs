@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Karachi
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Karachi
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 0f2975ae00d1e0e4085f056810b98f57, type: 2}
-  - {fileID: 11400000, guid: 3c2c022c83c894a49b0c85e41e7043e4, type: 2}
-  - {fileID: 11400000, guid: 9e56151e719ff0349b07078eee9c2a4b, type: 2}
-  - {fileID: 11400000, guid: cb51298c4e78a2546a2e39b259b0c1e5, type: 2}
-  - {fileID: 11400000, guid: dc94905b0c88b934f8b26c287ccda21c, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: a4d734db9470f2f49bd6d74baa32b696, type: 2}
+  - {fileID: 11400000, guid: 3b2774acc4b98dc4fbbbb2d76a1c0726, type: 2}
+  - {fileID: 11400000, guid: 5fff5bda00a48244ebc83c3dc800d762, type: 2}
+  - {fileID: 11400000, guid: ae1adf6028294bc41a0d9fb134c51d7a, type: 2}
+  - {fileID: 11400000, guid: 82f0874fbd3a369489dff85be5cf4b67, type: 2}
+  position: {x: 1296, y: 622}

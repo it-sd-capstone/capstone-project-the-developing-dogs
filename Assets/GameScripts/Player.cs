@@ -9,14 +9,16 @@ public class Player : MonoBehaviour
     public string PlayerName { get; private set; }
     public City CurrentCity { get; private set; }
     public Role Role { get; private set; }
+    public GameBoard board;
 
     // Player hand information.
     public List<PlayerCard> Hand { get; private set; } = new List<PlayerCard>();
     public const int MaxHandSize = 7;
 
     // Sets up the player at the start of the game.
-    public void Initialize(string name, City startingCity, Role role)
+    public void Initialize(string name, City startingCity, Role role, GameBoard gameBoard)
     {
+        board = gameBoard;
         PlayerName = name;
         CurrentCity = startingCity;
         SetRole(role);
@@ -44,7 +46,8 @@ public class Player : MonoBehaviour
         // Allow the role to change how many cubes are removed.
         Role?.OnTreatDisease(CurrentCity, color, ref cubesToRemove);
 
-        CurrentCity.RemoveCubes(color, cubesToRemove);
+        for(int i = cubesToRemove; i >= 0; i--)
+        board.RemoveDisease(CurrentCity, color);
     }
 
     // Checks if the player has enough matching cards to discover a cure.

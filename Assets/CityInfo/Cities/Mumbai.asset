@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Mumbai
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Mumbai
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 74748714af923a541a6ccd8dd686e89d, type: 2}
-  - {fileID: 11400000, guid: cb51298c4e78a2546a2e39b259b0c1e5, type: 2}
-  - {fileID: 11400000, guid: df055b77f5fa94844ac5869cbe02b4e1, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 03660af1a9bffae4badf2af34ee6de88, type: 2}
+  - {fileID: 11400000, guid: ae1adf6028294bc41a0d9fb134c51d7a, type: 2}
+  - {fileID: 11400000, guid: 350f9bb3b6381a54fb5a6e89e2f128a9, type: 2}
+  position: {x: 1310, y: 540}

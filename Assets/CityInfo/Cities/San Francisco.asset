@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: San Francisco
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: San Francisco
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: a49e36edd4bd3344393e0b5473aab2da, type: 2}
-  - {fileID: 11400000, guid: c621ceb18be32fc4e95ec68031c01f75, type: 2}
-  - {fileID: 11400000, guid: b61ab153426f5ca42ac7c44b58614e9d, type: 2}
-  - {fileID: 11400000, guid: 0aac27a8b324b8f4da3a3da30183ff57, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 2c3271d507f666647b1b78042f7ab89b, type: 2}
+  - {fileID: 11400000, guid: 85c76b6349bda3d4f8c7220b672298d3, type: 2}
+  - {fileID: 11400000, guid: 5ca6ee019242fcb42a256d347b82b241, type: 2}
+  - {fileID: 11400000, guid: edcc39dfe51bf4944ae4672e178b8672, type: 2}
+  position: {x: 107, y: 718}

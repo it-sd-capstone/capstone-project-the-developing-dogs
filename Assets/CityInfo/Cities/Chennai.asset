@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Chennai
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Chennai
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: dc94905b0c88b934f8b26c287ccda21c, type: 2}
-  - {fileID: 11400000, guid: cb51298c4e78a2546a2e39b259b0c1e5, type: 2}
-  - {fileID: 11400000, guid: 0e4c69ec010c022438abc906f30f1157, type: 2}
-  - {fileID: 11400000, guid: 2b26e89f688a9bc48843deb14b16155c, type: 2}
-  - {fileID: 11400000, guid: 78a0315e1cea5634d8767d14d9fcd84b, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 82f0874fbd3a369489dff85be5cf4b67, type: 2}
+  - {fileID: 11400000, guid: ae1adf6028294bc41a0d9fb134c51d7a, type: 2}
+  - {fileID: 11400000, guid: 47d29dd4945db7c40ab619bd60bf0998, type: 2}
+  - {fileID: 11400000, guid: e6d711ab65af1554684c519a04d71422, type: 2}
+  - {fileID: 11400000, guid: 6108fad545074d449a02fa28546650bf, type: 2}
+  position: {x: 1421, y: 482}

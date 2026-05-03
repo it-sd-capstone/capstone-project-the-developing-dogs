@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Lima
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Lima
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 38e9f8114283b7f4bb9bb444671e2be0, type: 2}
-  - {fileID: 11400000, guid: 9197d9e4924a63e41a76ee87564e9330, type: 2}
-  - {fileID: 11400000, guid: 5048f88dbbab1744b8b43f6cd9de6ea3, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: 23c21358df8048345b469322c1c83355, type: 2}
+  position: {x: 370, y: 349}

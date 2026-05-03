@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: New York
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: New York
+  diseaseColor: 1
   color: {r: 0, g: 0, b: 1, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 70790f006eded034f82867dda8f34c88, type: 2}
-  - {fileID: 11400000, guid: 7420ec38866f54f4c9796e64890911c6, type: 2}
-  - {fileID: 11400000, guid: e6840e04a918b9842a7bcdb559bdef5a, type: 2}
-  - {fileID: 11400000, guid: 41622dde1b198dd4cb64e830655ebe29, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: bce9f216d9a2484439f479865fd4a213, type: 2}
+  - {fileID: 11400000, guid: 31eb7e48fca949245a8b1dd863a6b2bc, type: 2}
+  - {fileID: 11400000, guid: 888b7894e597f1b43a1bc77a379d4976, type: 2}
+  - {fileID: 11400000, guid: b0e368031f03ad142b57acadaa613506, type: 2}
+  position: {x: 542, y: 750}

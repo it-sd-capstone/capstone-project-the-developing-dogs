@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Khartoum
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Khartoum
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: e92025102af31734294036f3490e51aa, type: 2}
-  - {fileID: 11400000, guid: 9bfec5c3b7eb62543ad5908c39841cb5, type: 2}
-  - {fileID: 11400000, guid: 0f69f5eaf28b0194a9d53a5fafdf9e1e, type: 2}
-  - {fileID: 11400000, guid: 136c8df591f7aaa4b83894ff6005aa49, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 5a15dfabde48a6a4e981bb58f1161554, type: 2}
+  - {fileID: 11400000, guid: 86e2f6f46ec53e54eb4a2391ce7d8a97, type: 2}
+  - {fileID: 11400000, guid: 41bdf6d9da7a52e4384c1605e3ac5cba, type: 2}
+  - {fileID: 11400000, guid: 925e747a1b58e9643b3f00ed5ca2ca40, type: 2}
+  position: {x: 1074, y: 511}

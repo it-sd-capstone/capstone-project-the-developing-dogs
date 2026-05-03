@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Hong Kong
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Hong Kong
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: ffce3d6bd594a0f4784171190f0211eb, type: 2}
-  - {fileID: 11400000, guid: a31d213897f21ba46abe2bafb8811f8c, type: 2}
-  - {fileID: 11400000, guid: c621ceb18be32fc4e95ec68031c01f75, type: 2}
-  - {fileID: 11400000, guid: 2cd3ed5a4cd12504f92a643075a4de8b, type: 2}
-  - {fileID: 11400000, guid: 2b26e89f688a9bc48843deb14b16155c, type: 2}
-  - {fileID: 11400000, guid: 0e4c69ec010c022438abc906f30f1157, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: bd4ea4626be40b3429ea633c54c42d66, type: 2}
+  - {fileID: 11400000, guid: b33e16e02e788614898748ff1392ed4f, type: 2}
+  - {fileID: 11400000, guid: 85c76b6349bda3d4f8c7220b672298d3, type: 2}
+  - {fileID: 11400000, guid: 4dde26435a552674fb2e819e69172a74, type: 2}
+  - {fileID: 11400000, guid: e6d711ab65af1554684c519a04d71422, type: 2}
+  - {fileID: 11400000, guid: 47d29dd4945db7c40ab619bd60bf0998, type: 2}
+  position: {x: 1606, y: 583}

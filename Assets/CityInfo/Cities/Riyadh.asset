@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Riyadh
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Riyadh
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 3c2c022c83c894a49b0c85e41e7043e4, type: 2}
-  - {fileID: 11400000, guid: e92025102af31734294036f3490e51aa, type: 2}
-  - {fileID: 11400000, guid: df055b77f5fa94844ac5869cbe02b4e1, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 925e747a1b58e9643b3f00ed5ca2ca40, type: 2}
+  - {fileID: 11400000, guid: 3b2774acc4b98dc4fbbbb2d76a1c0726, type: 2}
+  - {fileID: 11400000, guid: 03660af1a9bffae4badf2af34ee6de88, type: 2}
+  position: {x: 1179, y: 558}

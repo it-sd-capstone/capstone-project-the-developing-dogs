@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Mexico City
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Mexico City
+  diseaseColor: 2
   color: {r: 1, g: 1, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 2ab917267c842774fb68ac06fb6d6ecd, type: 2}
-  - {fileID: 11400000, guid: 5048f88dbbab1744b8b43f6cd9de6ea3, type: 2}
-  - {fileID: 11400000, guid: f7ec4f86d7aeb2b4d96594ae2059362b, type: 2}
-  - {fileID: 11400000, guid: 0aac27a8b324b8f4da3a3da30183ff57, type: 2}
-  - {fileID: 11400000, guid: b61ab153426f5ca42ac7c44b58614e9d, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: edcc39dfe51bf4944ae4672e178b8672, type: 2}
+  - {fileID: 11400000, guid: 5ca6ee019242fcb42a256d347b82b241, type: 2}
+  - {fileID: 11400000, guid: c66e725ad22474f40a5005bcf35b85af, type: 2}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: 592e7890c1ee3334bb1783500501b4d4, type: 2}
+  position: {x: 270, y: 568}

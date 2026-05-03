@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Baghdad
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Baghdad
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 8b1c7e9c30067c74596ee642f8beb8dd, type: 2}
-  - {fileID: 11400000, guid: e92025102af31734294036f3490e51aa, type: 2}
-  - {fileID: 11400000, guid: 0f2975ae00d1e0e4085f056810b98f57, type: 2}
-  - {fileID: 11400000, guid: df055b77f5fa94844ac5869cbe02b4e1, type: 2}
-  - {fileID: 11400000, guid: 9e56151e719ff0349b07078eee9c2a4b, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 5fff5bda00a48244ebc83c3dc800d762, type: 2}
+  - {fileID: 11400000, guid: 03660af1a9bffae4badf2af34ee6de88, type: 2}
+  - {fileID: 11400000, guid: a4d734db9470f2f49bd6d74baa32b696, type: 2}
+  - {fileID: 11400000, guid: 925e747a1b58e9643b3f00ed5ca2ca40, type: 2}
+  - {fileID: 11400000, guid: a22e65cbd3994134da202cde43f68b3c, type: 2}
+  position: {x: 1167, y: 660}

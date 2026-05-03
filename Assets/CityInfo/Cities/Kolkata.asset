@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Kolkata
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Kolkata
+  diseaseColor: 3
   color: {r: 0, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: cb51298c4e78a2546a2e39b259b0c1e5, type: 2}
-  - {fileID: 11400000, guid: 2b26e89f688a9bc48843deb14b16155c, type: 2}
-  - {fileID: 11400000, guid: 2cd3ed5a4cd12504f92a643075a4de8b, type: 2}
-  - {fileID: 11400000, guid: a5bc226c9685cfd41bec4c3c46c470fa, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: ae1adf6028294bc41a0d9fb134c51d7a, type: 2}
+  - {fileID: 11400000, guid: 350f9bb3b6381a54fb5a6e89e2f128a9, type: 2}
+  - {fileID: 11400000, guid: e6d711ab65af1554684c519a04d71422, type: 2}
+  - {fileID: 11400000, guid: a1ea7c8c79a12094abaf86f705ebd631, type: 2}
+  position: {x: 1499, y: 627}

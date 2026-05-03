@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Bangkok
   m_EditorClassIdentifier: Assembly-CSharp::CityData
   cityName: Bangkok
+  diseaseColor: 0
   color: {r: 1, g: 0, b: 0, a: 0}
   neighbors:
-  - {fileID: 11400000, guid: 0e4c69ec010c022438abc906f30f1157, type: 2}
-  - {fileID: 11400000, guid: 74748714af923a541a6ccd8dd686e89d, type: 2}
-  - {fileID: 11400000, guid: 2cd3ed5a4cd12504f92a643075a4de8b, type: 2}
-  - {fileID: 11400000, guid: 78a0315e1cea5634d8767d14d9fcd84b, type: 2}
-  - {fileID: 11400000, guid: a5bc226c9685cfd41bec4c3c46c470fa, type: 2}
-  position: {x: 0, y: 0}
+  - {fileID: 11400000, guid: 47d29dd4945db7c40ab619bd60bf0998, type: 2}
+  - {fileID: 11400000, guid: a1ea7c8c79a12094abaf86f705ebd631, type: 2}
+  - {fileID: 11400000, guid: 4dde26435a552674fb2e819e69172a74, type: 2}
+  - {fileID: 11400000, guid: 6108fad545074d449a02fa28546650bf, type: 2}
+  - {fileID: 11400000, guid: 350f9bb3b6381a54fb5a6e89e2f128a9, type: 2}
+  position: {x: 1521, y: 531}
