@@ -6,7 +6,7 @@ using UnityEngine;
 public class City
 {
     public string cityName {get; private set;}
-    public Color diseaseColor {get; private set;}
+    public DiseaseColor diseaseColor {get; private set;}
     public List<City> neighbors {get; private set;}
     
     public Dictionary<DiseaseColor, int> infectionLevels;
@@ -15,7 +15,9 @@ public class City
     public void Init(CityData data)
     {
         cityName = data.cityName;
-        diseaseColor = data.color;
+        diseaseColor = data.diseaseColor;
+        neighbors = new List<City>();
+        infectionLevels = new Dictionary<DiseaseColor, int>();
         
         foreach(DiseaseColor color in System.Enum.GetValues(typeof(DiseaseColor)))
         {
@@ -27,19 +29,22 @@ public class City
 
     public void addCube(DiseaseColor color)
     {
-        infectionLevels[color] += 1;
+        if(infectionLevels[color] <3) infectionLevels[color]++;
     }
 
     public void removeCube(DiseaseColor color)
     {
-        infectionLevels[color] -= 1;
+        if(infectionLevels[color] <0) infectionLevels[color]--;
     }
 
-    public int GetDiseaseCount(DiseaseColor color) => infectionLevels[color];
-    
-    public void CureCity(DiseaseColor color)
+    public void RemoveAllCubes(DiseaseColor color)
     {
         infectionLevels[color] = 0;
+    }
+
+    public int GetDiseaseCount(DiseaseColor color)
+    {
+        return infectionLevels[color];
     }
 
     public void BuildResearchStation()

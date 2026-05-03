@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: Lima
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: Lima
+  diseaseColor: 2
+  color: {r: 1, g: 1, b: 0, a: 0}
+  neighbors:
+  - {fileID: 11400000, guid: a6f75f37fcc79b046b7e31524a02ef3d, type: 2}
+  - {fileID: 11400000, guid: 809a5c95d486e5a4b9787272ca079717, type: 2}
+  - {fileID: 11400000, guid: 23c21358df8048345b469322c1c83355, type: 2}
+  position: {x: 370, y: 349}

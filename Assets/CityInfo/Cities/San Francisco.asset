@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04631f6c05c89c245a7b9bdbe1f6b2ec, type: 3}
+  m_Name: San Francisco
+  m_EditorClassIdentifier: Assembly-CSharp::CityData
+  cityName: San Francisco
+  diseaseColor: 1
+  color: {r: 0, g: 0, b: 1, a: 0}
+  neighbors:
+  - {fileID: 11400000, guid: 2c3271d507f666647b1b78042f7ab89b, type: 2}
+  - {fileID: 11400000, guid: 85c76b6349bda3d4f8c7220b672298d3, type: 2}
+  - {fileID: 11400000, guid: 5ca6ee019242fcb42a256d347b82b241, type: 2}
+  - {fileID: 11400000, guid: edcc39dfe51bf4944ae4672e178b8672, type: 2}
+  position: {x: 107, y: 718}

@@ -8,6 +8,9 @@ public class CityData : ScriptableObject
     // Display name for the city.
     public String cityName;
 
+    // Game color from diseasecolor enum
+    public DiseaseColor diseaseColor;
+
     // Visual color used for this city in Unity.
     public Color color;
 
