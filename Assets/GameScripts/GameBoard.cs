@@ -23,7 +23,7 @@ public class GameBoard : MonoBehaviour
     public int researchStationCount = 6;
         
     [Header("City database")]
-    [SerializeField] private CityDB citiesDB;
+    [SerializeField] public CityDB citiesDB;
 
     private void Awake()
     {
