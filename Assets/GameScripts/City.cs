@@ -7,8 +7,9 @@ public class City
 {
     public string cityName {get; private set;}
     public DiseaseColor diseaseColor {get; private set;}
-    public List<City> neighbors {get; private set;}
-    
+    [System.NonSerialized]
+    public List<City> neighbors = new List<City>();
+
     public Dictionary<DiseaseColor, int> infectionLevels;
     public bool hasResearchStation;
 

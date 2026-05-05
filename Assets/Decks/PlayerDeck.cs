@@ -97,4 +97,10 @@ public class PlayerDeck : MonoBehaviour
             (list[i], list[rand]) = (list[rand], list[i]);
         }
     }
+
+    public void Discard(PlayerCard card)
+    {
+        if (card != null)
+            discardPile.Add(card);
+    }
 }

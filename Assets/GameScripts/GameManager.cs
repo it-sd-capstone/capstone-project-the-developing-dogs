@@ -20,16 +20,40 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Player Count: " + GameSettings.PlayerCount);
+        Debug.Log("Difficulty: " + GameSettings.Difficulty);
+
+        ApplyDifficultyFromSettings();
         SetupGame();
         StartTurn();
+
+        Debug.Log("Game Started!");
+    }
+
+    void SetupPlayers()
+    {
+        players.Clear();
+
+        for (int i = 0; i < GameSettings.PlayerCount; i++)
+        {
+            GameObject playerObject = new GameObject("Player " + (i + 1));
+            Player player = playerObject.AddComponent<Player>();
+
+            players.Add(player);
+        }
     }
 
     void SetupGame()
     {
-        
+        SetupPlayers();
+
         List<PlayerCard> allCards = CreateAllPlayerCards();
+
         playerDeck.Initialize(allCards);
         playerDeck.InsertEpidemicCards(GetEpidemicCount());
+
+        DealStartingCards();
+
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
     }
@@ -55,6 +79,22 @@ public class GameManager : MonoBehaviour
         return cards;
     }
 
+    private void ApplyDifficultyFromSettings()
+    {
+        if (GameSettings.Difficulty == "Introductory")
+        {
+            difficulty = Difficulty.Introductory;
+        }
+        else if (GameSettings.Difficulty == "Heroic")
+        {
+            difficulty = Difficulty.Heroic;
+        }
+        else
+        {
+            difficulty = Difficulty.Standard;
+        }
+    }
+
     private int GetEpidemicCount()
     {
         switch (difficulty)
@@ -66,52 +106,55 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetupInitialInfections()
+    void SetupInitialInfections()
     {
-        //3 cities with 3 cubes
         for (int i = 0; i < 3; i++)
-        {
-            var card = infectionDeck.DrawInfectionCard();
-            board.InfectCity(card.City, card.Color);
-        }
+            InfectFromDeck(3);
 
-        //3 cities with 2 cubes
         for (int i = 0; i < 3; i++)
-        {
-            var card = infectionDeck.DrawInfectionCard();
-            board.InfectCity(card.City, card.Color);
-        }
+            InfectFromDeck(2);
 
-        //3 cities with 1 cube
         for (int i = 0; i < 3; i++)
-        {
-            var card = infectionDeck.DrawInfectionCard();
-            board.InfectCity(card.City, card.Color);
-        }
+            InfectFromDeck(1);
     }
 
     //Turn system
 
     void StartTurn()
     {
+        if (players == null || players.Count == 0)
+        {
+            Debug.LogError("No players assigned to GameManager.");
+            return;
+        }
+
+        if (currentPlayerIndex < 0 || currentPlayerIndex >= players.Count)
+        {
+            currentPlayerIndex = 0;
+        }
+
         Player current = players[currentPlayerIndex];
         Debug.Log("Starting turn for: " + current.PlayerName);
     }
 
     public void EndTurn()
     {
-        DrawPlayerCards();
-        InfectionPhase();
+        if (players == null || players.Count == 0)
+        {
+            Debug.LogError("Cannot end turn because no players exist.");
+            return;
+        }
+
+        DrawPlayerCardsForCurrentPlayer();
+        RunInfectionPhase();
 
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
         StartTurn();
     }
 
-    //Player card draw
-
-    private void DrawPlayerCards()
+    void DrawPlayerCardsForCurrentPlayer()
     {
-        Player current = players[currentPlayerIndex];
+        Player currentPlayer = players[currentPlayerIndex];
 
         for (int i = 0; i < 2; i++)
         {
@@ -121,10 +164,34 @@ public class GameManager : MonoBehaviour
             {
                 HandleEpidemic();
             }
-            else
+            else if (card != null)
             {
-                current.DrawCard(card);
+                currentPlayer.DrawCard(card);
             }
+        }
+    }
+
+    void RunInfectionPhase()
+    {
+        int infections = infectionRateTrack[infectionRateIndex];
+
+        for (int i = 0; i < infections; i++)
+        {
+            InfectionCard card = infectionDeck.DrawInfectionCard();
+
+            if (card != null)
+            {
+                board.InfectCity(card.City, card.Color);
+            }
+        }
+    }
+
+    // Discard 
+    public void DiscardPlayerCard(PlayerCard card)
+    {
+        if (card != null)
+        {
+            playerDeck.Discard(card);
         }
     }
 
@@ -135,20 +202,24 @@ public class GameManager : MonoBehaviour
         infectionRateIndex = Mathf.Min(infectionRateIndex + 1, infectionRateTrack.Length - 1);
 
         InfectionCard bottom = infectionDeck.DrawBottomCard();
-        board.InfectCity(bottom.City, bottom.Color);
+
+        if (bottom != null)
+        {
+            board.InfectCity(bottom.City, bottom.Color);
+        }
 
         infectionDeck.Intensify();
     }
 
-    //Infection
-
-    private void InfectionPhase()
+    void InfectFromDeck(int cubeCount)
     {
-        int infections = infectionRateTrack[infectionRateIndex];
+        InfectionCard card = infectionDeck.DrawInfectionCard();
 
-        for (int i = 0; i < infections; i++)
+        if (card == null)
+            return;
+
+        for (int i = 0; i < cubeCount; i++)
         {
-            InfectionCard card = infectionDeck.DrawInfectionCard();
             board.InfectCity(card.City, card.Color);
         }
     }
@@ -171,11 +242,43 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("You lose: " + reason);
     }
-}
 
-public enum Difficulty
-{
-    Introductory,
-    Standard,
-    Heroic
+    void DealStartingCards()
+    {
+        int cardsPerPlayer = GetStartingCardCount();
+
+        foreach (Player player in players)
+        {
+            for (int i = 0; i < cardsPerPlayer; i++)
+            {
+                PlayerCard card = playerDeck.DrawPlayerCard();
+
+                if (card != null)
+                {
+                    player.DrawCard(card);
+                }
+            }
+        }
+    }
+
+    int GetStartingCardCount()
+    {
+        if (players.Count == 2)
+            return 4;
+
+        if (players.Count == 3)
+            return 3;
+
+        if (players.Count == 4)
+            return 2;
+
+        return 4; // for 1 player testing
+    }
+
+    public enum Difficulty
+    {
+        Introductory,
+        Standard,
+        Heroic
+    }
 }
