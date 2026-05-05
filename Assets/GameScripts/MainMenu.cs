@@ -34,6 +34,8 @@ public class MainMenu : MonoBehaviour
         GameSettings.PlayerCount = count;
 
         playerSelectionText.text = "Players selected: " + count;
+
+        finalSelectionText.gameObject.SetActive(false);  // Hide if settings are modified
     }
 
     public void SetDifficulty(string difficulty)
@@ -42,9 +44,9 @@ public class MainMenu : MonoBehaviour
         GameSettings.Difficulty = difficulty;
 
         difficultySelectionText.text = "Difficulty selected: " + difficulty;
-        finalSelectionText.text =
-            "Players: " + selectedPlayers + "\n" +
-            "Difficulty: " + selectedDifficulty;
+
+        finalSelectionText.gameObject.SetActive(true); 
+        UpdateFinalSelectionText();
     }
 
     public void ShowDifficultyPanel()
@@ -52,14 +54,25 @@ public class MainMenu : MonoBehaviour
         playerSelectionPanel.SetActive(false);
         difficultyPanel.SetActive(true);
 
-        finalSelectionText.text =
-            "Players: " + selectedPlayers + "\n" +
-            "Difficulty: " + selectedDifficulty;
+        UpdateFinalSelectionText();
     }
 
     public void ShowPlayerSelectionPanel()
     {
         difficultyPanel.SetActive(false);
         playerSelectionPanel.SetActive(true);
+    }
+
+    void Start()
+    {
+        finalSelectionText.gameObject.SetActive(false);
+    }
+
+    private void UpdateFinalSelectionText()
+    {
+        finalSelectionText.text =
+            "Current settings:" + "\n" +
+            "Players: " + selectedPlayers + "\n" +
+            "Difficulty: " + selectedDifficulty;
     }
 }
