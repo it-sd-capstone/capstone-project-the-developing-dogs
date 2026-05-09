@@ -19,6 +19,9 @@ public class GameBoardGraphics : MonoBehaviour
     [Header("City positions")]
     [SerializeField] private CityDB citiesDB;
 
+    [Header("City card")]
+    [SerializeField] private CityCard cc;
+
     private GameBoard gameBoard;       // reference to the logic board
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
 
@@ -58,6 +61,9 @@ public class GameBoardGraphics : MonoBehaviour
                 img.color = GetDisplayColor(data.diseaseColor);
 
             cityMarkers[city] = marker;
+
+            Button btn = marker.GetComponent<Button>();
+            btn.onClick.AddListener(() => OnCityMarkerClicked(city));
         }
     }
 
@@ -134,6 +140,18 @@ public class GameBoardGraphics : MonoBehaviour
             case DiseaseColor.Yellow: return Color.yellow;
             case DiseaseColor.Black: return Color.black;
             default: return Color.gray;
+        }
+    }
+
+    private void OnCityMarkerClicked(City city)
+    {
+        if (cc != null)
+        {
+            cc.ShowCityCard(city);
+        }
+        else
+        {
+            Debug.LogWarning("CityInfoCard reference is missing in GameBoardGraphics!");
         }
     }
 }

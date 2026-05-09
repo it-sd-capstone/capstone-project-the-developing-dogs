@@ -9,9 +9,9 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
-    public System.Action<City> OnCityInfected;
-    public System.Action<City> OnOutbreak;
-    public System.Action<City> OnResearchStationBuilt;
+    public Action<City> OnCityInfected;
+    public Action<City> OnOutbreak;
+    public Action<City> OnResearchStationBuilt;
 
     public List<City> cities = new List<City>();
     public Dictionary<string, City> cityLookup = new Dictionary<string, City>();
