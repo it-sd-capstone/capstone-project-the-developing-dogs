@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public Difficulty difficulty = Difficulty.Standard;
 
     private int currentPlayerIndex = 0;
-    private int infectionRateIndex = 0;
+    public int infectionRateIndex = 0;
     private int curesFound = 0;
 
     private readonly int[] infectionRateTrack = { 2, 2, 2, 3, 3, 4, 4 };
