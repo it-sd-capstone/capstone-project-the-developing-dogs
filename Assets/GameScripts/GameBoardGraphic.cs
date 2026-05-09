@@ -19,6 +19,9 @@ public class GameBoardGraphics : MonoBehaviour
     [Header("City positions")]
     [SerializeField] private CityDB citiesDB;
 
+    [Header("City Card")]
+    [SerializeField] private CityCard cc;
+
     private GameBoard gameBoard;       // reference to the logic board
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
 
@@ -59,6 +62,9 @@ public class GameBoardGraphics : MonoBehaviour
                 img.color = GetDisplayColor(data.diseaseColor);
 
             cityMarkers[city] = marker;
+
+            Button btn = marker.GetComponent<Button>();
+            btn.onClick.AddListener(() => OnCityClick(city));
         }
     }
 
@@ -136,5 +142,10 @@ public class GameBoardGraphics : MonoBehaviour
             case DiseaseColor.Black: return Color.black;
             default: return Color.gray;
         }
+    }
+
+    private void OnCityClick(City city)
+    {
+        cc.OnClick(city);
     }
 }

@@ -48,6 +48,10 @@ public class GameBoard : MonoBehaviour
             City city = new City();
             city.Init(data);
             cities.Add(city);
+            if (city.cityName == "Atlanta")
+            {
+                city.hasResearchStation = true;
+            }
         }
 
         BuildCityLookup();
