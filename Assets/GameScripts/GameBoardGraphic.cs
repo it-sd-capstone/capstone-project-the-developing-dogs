@@ -22,6 +22,7 @@ public class GameBoardGraphics : MonoBehaviour
     private GameBoard gameBoard;       // reference to the logic board
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
 
+
     private void Start()
     {
         gameBoard = FindAnyObjectByType<GameBoard>();

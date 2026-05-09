@@ -21,7 +21,13 @@ public class GameBoard : MonoBehaviour
     public int outbreakCounter = 0;
     public int maxOutbreaks = 8;
     public int researchStationCount = 6;
-        
+
+    //For Infection Pool UI
+    public TMPro.TextMeshProUGUI blueText;
+    public TMPro.TextMeshProUGUI yellowText;
+    public TMPro.TextMeshProUGUI blackText;
+    public TMPro.TextMeshProUGUI redText;
+
     [Header("City database")]
     [SerializeField] public CityDB citiesDB;
 
@@ -161,4 +167,16 @@ public class GameBoard : MonoBehaviour
                 if(!curePool[color]) return false;
             return true;
     }
+
+    private void Update()
+    {
+        if (blueText != null)
+        {
+            blueText.text = cubePool[DiseaseColor.Blue].ToString();
+            yellowText.text = cubePool[DiseaseColor.Yellow].ToString();
+            blackText.text = cubePool[DiseaseColor.Black].ToString();
+            redText.text = cubePool[DiseaseColor.Red].ToString();
+        }
+    }
+
 }
