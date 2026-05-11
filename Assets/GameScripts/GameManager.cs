@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using NUnit.Framework.Internal;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,13 +11,19 @@ public class GameManager : MonoBehaviour
     public InfectionDeck infectionDeck;
     public PlayerDeck playerDeck;
     public List<Player> players = new List<Player>();
+    public PlayerAction pa;
 
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
 
-    private int currentPlayerIndex = 0;
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI actionText;
+    [SerializeField] private TextMeshProUGUI messageText;
+
+    public int currentPlayerIndex = 0;
     public int infectionRateIndex = 0;
     private int curesFound = 0;
+    public int actionCount;
 
     private readonly int[] infectionRateTrack = { 2, 2, 2, 3, 3, 4, 4 };
 
@@ -38,6 +47,8 @@ public class GameManager : MonoBehaviour
         {
             GameObject playerObject = new GameObject("Player " + (i + 1));
             Player player = playerObject.AddComponent<Player>();
+            
+            player.Initialize($"Player {i+1}", board.cityLookup["Atlanta"], board);
 
             players.Add(player);
         }
@@ -56,6 +67,8 @@ public class GameManager : MonoBehaviour
 
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
+
+        pa = FindAnyObjectByType<PlayerAction>();
     }
 
     private List<PlayerCard> CreateAllPlayerCards()
@@ -135,6 +148,10 @@ public class GameManager : MonoBehaviour
 
         Player current = players[currentPlayerIndex];
         Debug.Log("Starting turn for: " + current.PlayerName);
+
+        pa.UpdateCurrentPlayer(players[currentPlayerIndex]);
+
+        actionCount = 4;
     }
 
     public void EndTurn()
@@ -143,6 +160,12 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Cannot end turn because no players exist.");
             return;
+        }
+
+        // Clear any pending actions
+        if (pa != null)
+        {
+            pa.ClearActionState();
         }
 
         DrawPlayerCardsForCurrentPlayer();
@@ -273,6 +296,42 @@ public class GameManager : MonoBehaviour
             return 2;
 
         return 4; // for 1 player testing
+    }
+
+    public void TestPlayer()
+    {
+        GameObject playerObject = new GameObject("Player " + (1));
+        Player player = playerObject.AddComponent<Player>();
+            
+        player.Initialize("Player 0", board.cityLookup["Atlanta"], board);
+
+        players.Add(player);
+    }
+
+    public void UpdateActionDisplay()
+    {
+        if (actionText != null)
+        {
+            actionText.text = $"Actions: {actionCount}";
+        }
+    }
+
+    public void ShowMessage(string message)
+    {
+        if (messageText != null)
+        {
+            messageText.text = message;
+            // Optional: clear after a few seconds
+            CancelInvoke(nameof(ClearMessage));
+            Invoke(nameof(ClearMessage), 3f);
+        }
+        Debug.Log(message);
+    }
+
+    private void ClearMessage()
+    {
+        if (messageText != null)
+            messageText.text = "";
     }
 
     public enum Difficulty
