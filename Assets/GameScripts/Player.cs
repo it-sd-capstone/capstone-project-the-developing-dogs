@@ -16,12 +16,12 @@ public class Player : MonoBehaviour
     public const int MaxHandSize = 7;
 
     // Sets up the player at the start of the game.
-    public void Initialize(string name, City startingCity, Role role, GameBoard gameBoard)
+    public void Initialize(string name, City startingCity, GameBoard gameBoard)
     {
         board = gameBoard;
         PlayerName = name;
         CurrentCity = startingCity;
-        SetRole(role);
+        // SetRole(role);
     }
 
     // Assigns a role to the player and lets the role know who owns it.

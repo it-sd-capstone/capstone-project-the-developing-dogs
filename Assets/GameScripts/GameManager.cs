@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NUnit.Framework.Internal;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,9 +13,10 @@ public class GameManager : MonoBehaviour
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
 
-    private int currentPlayerIndex = 0;
+    public int currentPlayerIndex = 0;
     public int infectionRateIndex = 0;
     private int curesFound = 0;
+    public int actionCount;
 
     private readonly int[] infectionRateTrack = { 2, 2, 2, 3, 3, 4, 4 };
 
@@ -38,6 +40,8 @@ public class GameManager : MonoBehaviour
         {
             GameObject playerObject = new GameObject("Player " + (i + 1));
             Player player = playerObject.AddComponent<Player>();
+            
+            player.Initialize($"Player {i}", board.cityLookup["Atlanta"], board);
 
             players.Add(player);
         }
@@ -135,10 +139,13 @@ public class GameManager : MonoBehaviour
 
         Player current = players[currentPlayerIndex];
         Debug.Log("Starting turn for: " + current.PlayerName);
+
+        actionCount = 4;
     }
 
     public void EndTurn()
     {
+        if (actionCount > 0) return;
         if (players == null || players.Count == 0)
         {
             Debug.LogError("Cannot end turn because no players exist.");
@@ -273,6 +280,16 @@ public class GameManager : MonoBehaviour
             return 2;
 
         return 4; // for 1 player testing
+    }
+
+    public void TestPlayer()
+    {
+        GameObject playerObject = new GameObject("Player " + (1));
+        Player player = playerObject.AddComponent<Player>();
+            
+        player.Initialize("Player 0", board.cityLookup["Atlanta"], board);
+
+        players.Add(player);
     }
 
     public enum Difficulty

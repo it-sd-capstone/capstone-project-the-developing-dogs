@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class GameBoardGraphics : MonoBehaviour
@@ -24,6 +25,8 @@ public class GameBoardGraphics : MonoBehaviour
 
     private GameBoard gameBoard;       // reference to the logic board
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
+    private PlayerGraphics pg;
+    private GameManager gm;
 
 
     private void Start()
@@ -34,9 +37,10 @@ public class GameBoardGraphics : MonoBehaviour
             Debug.LogError("No GameBoard found in scene!");
             return;
         }
+        pg = FindAnyObjectByType<PlayerGraphics>();
+        gm = FindAnyObjectByType<GameManager>();
 
         DrawCities();
-        DrawConnections();
 
         foreach (Transform child in boardContainer)
         {
@@ -65,71 +69,11 @@ public class GameBoardGraphics : MonoBehaviour
 
             Button btn = marker.GetComponent<Button>();
             btn.onClick.AddListener(() => OnCityClick(city));
+
+            var outline = marker.AddComponent<Outline>();
+            outline.effectColor = Color.softYellow;
+            outline.enabled = false;
         }
-    }
-
-    private void DrawConnections()
-    {
-        // Use a set to avoid duplicate lines
-        HashSet<(City, City)> drawn = new HashSet<(City, City)>();
-
-        foreach (City city in gameBoard.cities)
-        {
-            foreach (City neighbor in city.neighbors)
-            {
-                if (drawn.Contains((city, neighbor)) || drawn.Contains((neighbor, city)))
-                    continue;
-                drawn.Add((city, neighbor));
-
-                // Get positions of the two city markers
-                if (cityMarkers.TryGetValue(city, out GameObject fromObj) &&
-                    cityMarkers.TryGetValue(neighbor, out GameObject toObj))
-                {
-                    Vector2 fromPos = fromObj.GetComponent<RectTransform>().anchoredPosition;
-                    Vector2 toPos = toObj.GetComponent<RectTransform>().anchoredPosition;
-                    if(Mathf.Abs(toPos.x - fromPos.x) > boardContainer.rect.width / 2f)
-                        WrapLine(fromPos, toPos);
-                    else DrawLine(fromPos, toPos);
-                }
-            }
-        }
-    }
-
-    private void WrapLine(Vector2 from, Vector2 to)
-    {
-        bool left = (to.x > from.x);
-        float width = boardContainer.rect.width;
-
-        Vector2 leftPoint, rightPoint;
-        float shift = 0;
-
-        if (left)  shift = to.x - width;
-        else shift = to.x + width;
-
-        float slope = (to.y - from.y) / (shift - from.x);
-
-        float edgeY = (slope * (shift - from.x)) + from.y;
-
-        leftPoint = new Vector2(0, edgeY);
-        rightPoint = new Vector2(width, edgeY);
-
-        Debug.Log(leftPoint);
-        Debug.Log(rightPoint);
-
-        DrawLine(from, left ? leftPoint : rightPoint);
-        DrawLine(to, left ? rightPoint  : leftPoint);
-    }
-
-    private void DrawLine(Vector2 start, Vector2 end, float thickness = 5f)
-    {
-        GameObject line = Instantiate(connectionLinePrefab, boardContainer);
-        RectTransform rt = line.GetComponent<RectTransform>();
-        Vector2 dir = end - start;
-        float dist = dir.magnitude;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        rt.anchoredPosition = start;
-        rt.sizeDelta = new Vector2(dist, thickness);
-        rt.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private Color GetDisplayColor(DiseaseColor disease)
@@ -147,5 +91,18 @@ public class GameBoardGraphics : MonoBehaviour
     private void OnCityClick(City city)
     {
         cc.OnClick(city);
+        if (pg.driveState && gm.players[gm.currentPlayerIndex].CurrentCity.neighbors.Contains(city))
+        {
+            gm.players[gm.currentPlayerIndex].MoveTo(city);
+            Debug.Log($"Player {gm.currentPlayerIndex + 1} has moved to {city}");
+            gm.actionCount--;
+            gm.EndTurn();
+        }
+    }
+
+    public void Highlight(City city, bool value)
+    {
+        var outline = cityMarkers[city].GetComponent<Outline>();
+        outline.enabled = value;
     }
 }
