@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework.Internal;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,9 +11,14 @@ public class GameManager : MonoBehaviour
     public InfectionDeck infectionDeck;
     public PlayerDeck playerDeck;
     public List<Player> players = new List<Player>();
+    public PlayerAction pa;
 
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
+
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI actionText;
+    [SerializeField] private TextMeshProUGUI messageText;
 
     public int currentPlayerIndex = 0;
     public int infectionRateIndex = 0;
@@ -41,7 +48,7 @@ public class GameManager : MonoBehaviour
             GameObject playerObject = new GameObject("Player " + (i + 1));
             Player player = playerObject.AddComponent<Player>();
             
-            player.Initialize($"Player {i}", board.cityLookup["Atlanta"], board);
+            player.Initialize($"Player {i+1}", board.cityLookup["Atlanta"], board);
 
             players.Add(player);
         }
@@ -60,6 +67,8 @@ public class GameManager : MonoBehaviour
 
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
+
+        pa = FindAnyObjectByType<PlayerAction>();
     }
 
     private List<PlayerCard> CreateAllPlayerCards()
@@ -140,16 +149,23 @@ public class GameManager : MonoBehaviour
         Player current = players[currentPlayerIndex];
         Debug.Log("Starting turn for: " + current.PlayerName);
 
+        pa.UpdateCurrentPlayer(players[currentPlayerIndex]);
+
         actionCount = 4;
     }
 
     public void EndTurn()
     {
-        if (actionCount > 0) return;
         if (players == null || players.Count == 0)
         {
             Debug.LogError("Cannot end turn because no players exist.");
             return;
+        }
+
+        // Clear any pending actions
+        if (pa != null)
+        {
+            pa.ClearActionState();
         }
 
         DrawPlayerCardsForCurrentPlayer();
@@ -290,6 +306,32 @@ public class GameManager : MonoBehaviour
         player.Initialize("Player 0", board.cityLookup["Atlanta"], board);
 
         players.Add(player);
+    }
+
+    public void UpdateActionDisplay()
+    {
+        if (actionText != null)
+        {
+            actionText.text = $"Actions: {actionCount}";
+        }
+    }
+
+    public void ShowMessage(string message)
+    {
+        if (messageText != null)
+        {
+            messageText.text = message;
+            // Optional: clear after a few seconds
+            CancelInvoke(nameof(ClearMessage));
+            Invoke(nameof(ClearMessage), 3f);
+        }
+        Debug.Log(message);
+    }
+
+    private void ClearMessage()
+    {
+        if (messageText != null)
+            messageText.text = "";
     }
 
     public enum Difficulty

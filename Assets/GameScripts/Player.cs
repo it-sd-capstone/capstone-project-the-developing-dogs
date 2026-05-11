@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
         // Allow the role to change how many cubes are removed.
         Role?.OnTreatDisease(CurrentCity, color, ref cubesToRemove);
 
-        for(int i = cubesToRemove; i >= 0; i--)
+        for(int i = cubesToRemove; i > 0; i--)
         board.RemoveDisease(CurrentCity, color);
     }
 
@@ -139,5 +139,15 @@ public class Player : MonoBehaviour
     public void UseRoleAbility(GameBoard board)
     {
         Role?.UseSpecialAbility(board);
+    }
+
+    public bool CanFly(Player p, City city)
+    {
+        foreach (PlayerCard card in p.Hand)
+        {
+            if (card.City == p.CurrentCity) return true;
+            if (card.City == city) return true;
+        }
+        return false;
     }
 }

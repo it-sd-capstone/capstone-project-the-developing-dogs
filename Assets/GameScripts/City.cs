@@ -35,7 +35,7 @@ public class City
 
     public void removeCube(DiseaseColor color)
     {
-        if(infectionLevels[color] <0) infectionLevels[color]--;
+        if(infectionLevels[color] > 0) infectionLevels[color]--;
     }
 
     public void RemoveAllCubes(DiseaseColor color)
