@@ -19,6 +19,11 @@ public class CityCard : MonoBehaviour
 
     public void OnClick(City city)
     {
+        UpdateCC(city);
+    }
+
+    public void UpdateCC(City city)
+    {
         cityName.text = city.cityName;
         if(city.hasResearchStation) station.enabled = true;
         else station.enabled = false;

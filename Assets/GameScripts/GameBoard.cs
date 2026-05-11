@@ -143,7 +143,7 @@ public class GameBoard : MonoBehaviour
             city.addCube(disease);
             cubePool[disease]--;
         }
-
+        cc.UpdateCC(city);
     }
 
     private void TriggerOutbreak(City city, DiseaseColor groundZeroColor, HashSet<City> outbreakChain)
@@ -174,6 +174,7 @@ public class GameBoard : MonoBehaviour
             city.removeCube(color);
             cubePool[color]++;
         }
+        cc.UpdateCC(city);
         UpdateCount();
     }
 
@@ -252,7 +253,7 @@ public class GameBoard : MonoBehaviour
         outline.enabled = !outline.enabled;
     }
 
-    // Method to clear highlight from a specific city
+    // clear highlight from a specific city
     public void ClearHighlight(City city)
     {
         if (cityMarkers.TryGetValue(city, out GameObject marker))
@@ -263,7 +264,6 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    // Method to clear all highlights
     public void ClearAllHighlights()
     {
         foreach (var marker in cityMarkers.Values)
