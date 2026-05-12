@@ -6,6 +6,9 @@ public class PlayerDeck : MonoBehaviour
     private Stack<PlayerCard> drawPile = new Stack<PlayerCard>();
     private List<PlayerCard> discardPile = new List<PlayerCard>();
 
+    public int Count => drawPile.Count;
+    public int DiscardCount => discardPile.Count;
+
     public void Initialize(List<PlayerCard> allCards)
     {
         drawPile.Clear();

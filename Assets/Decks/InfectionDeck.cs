@@ -6,6 +6,9 @@ public class InfectionDeck : MonoBehaviour
     private Stack<InfectionCard> drawPile = new Stack<InfectionCard>();
     private List<InfectionCard> discardPile = new List<InfectionCard>();
 
+    public int Count => drawPile.Count;
+    public int DiscardCount => discardPile.Count;
+
     public void Initialize(List<City> cities)
     {
         drawPile.Clear();

@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
 
+    [Header("UI")]
+    public GameInfoUI gameInfoUI;
+
     private int currentPlayerIndex = 0;
     public int infectionRateIndex = 0;
     private int curesFound = 0;
@@ -39,6 +42,8 @@ public class GameManager : MonoBehaviour
             GameObject playerObject = new GameObject("Player " + (i + 1));
             Player player = playerObject.AddComponent<Player>();
 
+            player.SetPlayerName("Player " + (i + 1));
+
             players.Add(player);
         }
     }
@@ -49,10 +54,16 @@ public class GameManager : MonoBehaviour
 
         List<PlayerCard> allCards = CreateAllPlayerCards();
 
+        //playerDeck.Initialize(allCards);
+        //playerDeck.InsertEpidemicCards(GetEpidemicCount());
+
+        //DealStartingCards();
+
         playerDeck.Initialize(allCards);
-        playerDeck.InsertEpidemicCards(GetEpidemicCount());
 
         DealStartingCards();
+
+        playerDeck.InsertEpidemicCards(GetEpidemicCount());
 
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
@@ -134,7 +145,13 @@ public class GameManager : MonoBehaviour
         }
 
         Player current = players[currentPlayerIndex];
+
         Debug.Log("Starting turn for: " + current.PlayerName);
+
+        if (gameInfoUI != null)
+        {
+            gameInfoUI.UpdateGameInfo(current, playerDeck, infectionDeck);
+        }
     }
 
     public void EndTurn()
@@ -256,6 +273,13 @@ public class GameManager : MonoBehaviour
                 if (card != null)
                 {
                     player.DrawCard(card);
+
+                    CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
+
+                    if (cardUIManager != null && card.City != null)
+                    {
+                        cardUIManager.ShowPlayerCard(card);
+                    }
                 }
             }
         }
