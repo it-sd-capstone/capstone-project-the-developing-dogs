@@ -15,6 +15,11 @@ public class Player : MonoBehaviour
     public List<PlayerCard> Hand { get; private set; } = new List<PlayerCard>();
     public const int MaxHandSize = 7;
 
+    public void SetPlayerName(string name)
+    {
+        PlayerName = name;
+    }
+
     // Sets up the player at the start of the game.
     public void Initialize(string name, City startingCity, GameBoard gameBoard)
     {

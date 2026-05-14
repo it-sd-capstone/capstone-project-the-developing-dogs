@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
 
+    [Header("UI")]
+    public GameInfoUI gameInfoUI;
+
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI actionText;
     [SerializeField] private TextMeshProUGUI messageText;
@@ -50,6 +53,8 @@ public class GameManager : MonoBehaviour
             
             player.Initialize($"Player {i+1}", board.cityLookup["Atlanta"], board);
 
+            player.SetPlayerName("Player " + (i + 1));
+
             players.Add(player);
         }
     }
@@ -60,10 +65,16 @@ public class GameManager : MonoBehaviour
 
         List<PlayerCard> allCards = CreateAllPlayerCards();
 
+        //playerDeck.Initialize(allCards);
+        //playerDeck.InsertEpidemicCards(GetEpidemicCount());
+
+        //DealStartingCards();
+
         playerDeck.Initialize(allCards);
-        playerDeck.InsertEpidemicCards(GetEpidemicCount());
 
         DealStartingCards();
+
+        playerDeck.InsertEpidemicCards(GetEpidemicCount());
 
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
@@ -147,11 +158,21 @@ public class GameManager : MonoBehaviour
         }
 
         Player current = players[currentPlayerIndex];
+
         Debug.Log("Starting turn for: " + current.PlayerName);
 
-        pa.UpdateCurrentPlayer(players[currentPlayerIndex]);
+        if (gameInfoUI != null)
+        {
+            gameInfoUI.UpdateGameInfo(current, playerDeck, infectionDeck);
+        }
+
+        if (pa != null)
+        {
+            pa.UpdateCurrentPlayer(players[currentPlayerIndex]);
+        }
 
         actionCount = 4;
+        UpdateActionDisplay();
     }
 
     public void EndTurn()
@@ -279,6 +300,13 @@ public class GameManager : MonoBehaviour
                 if (card != null)
                 {
                     player.DrawCard(card);
+
+                    CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
+
+                    if (cardUIManager != null && card.City != null)
+                    {
+                        cardUIManager.ShowPlayerCard(card);
+                    }
                 }
             }
         }

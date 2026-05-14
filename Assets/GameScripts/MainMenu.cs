@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,14 +29,53 @@ public class MainMenu : MonoBehaviour
     private int selectedPlayers = 0;
     private string selectedDifficulty = "Not selected";
 
+    [Header("Player Buttons")]
+    public Button soloButton;
+    public Button twoPlayerButton;
+    public Button threePlayerButton;
+    public Button fourPlayerButton;
+
+    public Color normalButtonColor = Color.white;
+    public Color selectedButtonColor = Color.yellow;
+
+    [Header("Difficulty Buttons")]
+    public Button introductoryButton;
+    public Button standardButton;
+    public Button heroicButton;
+
+    private void ResetDifficultyButtonColors()
+    {
+        introductoryButton.image.color = normalButtonColor;
+        standardButton.image.color = normalButtonColor;
+        heroicButton.image.color = normalButtonColor;
+    }
+
+    private void ResetPlayerButtonColors()
+    {
+        soloButton.image.color = normalButtonColor;
+        twoPlayerButton.image.color = normalButtonColor;
+        threePlayerButton.image.color = normalButtonColor;
+        fourPlayerButton.image.color = normalButtonColor;
+    }
+
     public void SetPlayerCount(int count)
     {
         selectedPlayers = count;
         GameSettings.PlayerCount = count;
 
-        playerSelectionText.text = "Players selected: " + count;
+        ResetPlayerButtonColors();
 
-        finalSelectionText.gameObject.SetActive(false);  // Hide if settings are modified
+        if (count == 1)
+            soloButton.image.color = selectedButtonColor;
+        else if (count == 2)
+            twoPlayerButton.image.color = selectedButtonColor;
+        else if (count == 3)
+            threePlayerButton.image.color = selectedButtonColor;
+        else if (count == 4)
+            fourPlayerButton.image.color = selectedButtonColor;
+
+        if (finalSelectionText != null)
+            finalSelectionText.gameObject.SetActive(false);
     }
 
     public void SetDifficulty(string difficulty)
@@ -43,10 +83,31 @@ public class MainMenu : MonoBehaviour
         selectedDifficulty = difficulty;
         GameSettings.Difficulty = difficulty;
 
-        difficultySelectionText.text = "Difficulty selected: " + difficulty;
+        ResetDifficultyButtonColors();
 
-        finalSelectionText.gameObject.SetActive(true); 
-        UpdateFinalSelectionText();
+        switch (difficulty)
+        {
+            case "Introductory":
+                introductoryButton.image.color = selectedButtonColor;
+                break;
+
+            case "Standard":
+                standardButton.image.color = selectedButtonColor;
+                break;
+
+            case "Heroic":
+                heroicButton.image.color = selectedButtonColor;
+                break;
+        }
+
+        if (difficultySelectionText != null)
+            difficultySelectionText.text = "Difficulty selected: " + difficulty;
+
+        if (finalSelectionText != null)
+        {
+            finalSelectionText.gameObject.SetActive(true);
+            UpdateFinalSelectionText();
+        }
     }
 
     public void ShowDifficultyPanel()
@@ -73,6 +134,6 @@ public class MainMenu : MonoBehaviour
         finalSelectionText.text =
             "Current settings:" + "\n" +
             "Players: " + selectedPlayers + "\n" +
-            "Difficulty: " + selectedDifficulty;
+            "Difficulty: " + "\n" + selectedDifficulty;
     }
 }
