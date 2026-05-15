@@ -137,7 +137,7 @@ public class PlayerAction : MonoBehaviour
 
         switch (pendingActionType)
         {
-            case "drive":
+            case "Drive":
                 // Check if selected city is a valid destination
                 if (currentValidDestinations.Contains(selectedCity))
                 {
@@ -159,6 +159,9 @@ public class PlayerAction : MonoBehaviour
                     ShowMessage("Cannot fly to that city! Must be a card in your hand.");
                 }
                 break;
+            case "Build":
+                BuildStation(selectedCity);
+                break;           
         }
         
     }
@@ -175,7 +178,7 @@ public class PlayerAction : MonoBehaviour
         // Update visuals
         board.UpdatePlayerPosition(currentP);
         
-        Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}. Actions remaining: {gm.actionCount}");
+        Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}.");
         
         ShowMessage($"Drove to {destination.cityName}! {gm.actionCount} actions remaining.");
         
@@ -305,6 +308,7 @@ public class PlayerAction : MonoBehaviour
         {
             // Need to discard the city card
             PlayerCard cityCard = currentP.Hand.Find(c => c.City == location);
+            CityCard cc = FindAnyObjectByType<CityCard>();
             
             if (cityCard == null)
             {
@@ -318,9 +322,10 @@ public class PlayerAction : MonoBehaviour
                 (confirmed) => {
                     if (confirmed)
                     {
+                        BuildStation(location);
                         currentP.DiscardCard(cityCard);
                         gm.DiscardPlayerCard(cityCard);
-                        BuildStation(location);
+                        cc.UpdateCC(location);
                     }
                     else
                     {
@@ -343,7 +348,7 @@ public class PlayerAction : MonoBehaviour
             gm.actionCount--;
             gm.UpdateActionDisplay();
             board.UpdateResearchStationVisual(location);
-            ShowMessage($"Built research station in {location.cityName}! {gm.actionCount} actions remaining.");
+            ShowMessage($"Built research station in {location.cityName}!");
             ClearActionState();
         }
         else
@@ -368,9 +373,7 @@ public class PlayerAction : MonoBehaviour
         // Highlight only the current city for building
         currentValidDestinations.Clear();
         currentValidDestinations.Add(currentP.CurrentCity);
-        board.Highlight(currentP.CurrentCity);
-        
-        ShowMessage("Select your current city to build a research station.");
+        ExecuteBuild(currentP.CurrentCity);
     }
     
     // TREAT DISEASE ACTION
@@ -522,7 +525,7 @@ public class PlayerAction : MonoBehaviour
         else if (currentP.Role is OperationsExpertRole && city != currentP.CurrentCity)
             roleText = " (Operations Expert treated adjacent city!)";
             
-        ShowMessage($"Treated {cubesToRemove} {color} disease cube(s) in {city.cityName}!{roleText} Actions remaining: {gm.actionCount}");
+        ShowMessage($"Treated {cubesToRemove} {color} disease cube(s) in {city.cityName}!{roleText} ");
         Debug.Log($"{currentP.PlayerName} treated {cubesToRemove} {color} cube(s) in {city.cityName}");
         
         // Check if player has no actions left
