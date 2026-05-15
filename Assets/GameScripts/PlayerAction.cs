@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -26,6 +28,11 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Button yesButton;
     [SerializeField] private Button noButton;
 
+    [Header("NoticePanel")]
+    [SerializeField] private GameObject noticePanel;
+    [SerializeField] private TextMeshProUGUI noticeExplainer;
+    [SerializeField] private Button okButton;
+
     [Header("Disease Selection")]
     [SerializeField] private GameObject diseaseSelectionPanel;
     [SerializeField] private Button redDiseaseButton;
@@ -50,6 +57,7 @@ public class PlayerAction : MonoBehaviour
 
     public void Start()
     {
+        noticePanel.SetActive(false);
         ynPanel.SetActive(false);
         if (diseaseSelectionPanel != null)
             diseaseSelectionPanel.SetActive(false);
@@ -126,20 +134,33 @@ public class PlayerAction : MonoBehaviour
     {
         if (!isAwaitingMove)
             return;
-            
-        if (pendingActionType == "Drive")
+
+        switch (pendingActionType)
         {
-            // Check if selected city is a valid destination
-            if (currentValidDestinations.Contains(selectedCity))
-            {
-                // Execute the move
-                ExecuteDrive(selectedCity);
-            }
-            else
-            {
-                ShowMessage("Cannot drive to that city! Must be connected by a line.");
-            }
+            case "drive":
+                // Check if selected city is a valid destination
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    // Execute the move
+                    ExecuteDrive(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot drive to that city! Must be connected by a line.");
+                }
+                break; 
+            case "Fly":
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    ExecuteFly(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot fly to that city! Must be a card in your hand.");
+                }
+                break;
         }
+        
     }
 
     private void ExecuteDrive(City destination)
@@ -168,7 +189,7 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
-     public void OnFlyClick()
+    public void OnFlyClick()
     {
         if (currentP == null || gm.actionCount <= 0)
         {
@@ -182,8 +203,20 @@ public class PlayerAction : MonoBehaviour
         // Get all cities that the player can fly to using cards
         foreach (PlayerCard card in currentP.Hand)
         {
-            if (card.City != null && !currentValidDestinations.Contains(card.City))
+            if (card.City == null) break;
+
+            if (card.City == currentP.CurrentCity)
             {
+                currentValidDestinations = board.cities.ToList();
+                ShowMessage("You have your current city's card so you may fly anywhere!");
+            }
+
+            if (!currentValidDestinations.Contains(card.City))
+            {
+                if (card.City == currentP.CurrentCity)
+                {
+                    currentValidDestinations = board.cities;
+                }
                 currentValidDestinations.Add(card.City);
                 
                 // Also highlight the city
@@ -535,6 +568,9 @@ public class PlayerAction : MonoBehaviour
     private void ShowMessage(string message)
     {
         Debug.Log(message);
+
+        noticeExplainer.text = message;
+        noticePanel.SetActive(true);
         // You can add a UI text element to show messages to the player
         // For example: messageText.text = message;
     }
@@ -605,5 +641,15 @@ public class PlayerAction : MonoBehaviour
         }
         
         ShowMessage($"Select an adjacent city to treat (Operations Expert ability).");
+    }
+
+    public void PromptDiscard(List<PlayerCard> hand)
+    {
+        return;
+    }
+
+    public void CloseNotice()
+    {
+        noticePanel.SetActive(false);
     }
 }

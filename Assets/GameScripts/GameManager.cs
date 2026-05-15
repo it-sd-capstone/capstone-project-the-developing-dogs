@@ -162,6 +162,7 @@ public class GameManager : MonoBehaviour
 
         if(cardUIManager != null)
         {
+            cardUIManager.ClearHand();
             foreach (PlayerCard card in current.Hand)
             {
                 cardUIManager.ShowPlayerCard(card);
@@ -199,7 +200,6 @@ public class GameManager : MonoBehaviour
 
         DrawPlayerCardsForCurrentPlayer();
         RunInfectionPhase();
-        cardUIManager.ClearHand();
 
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
         StartTurn();
@@ -221,6 +221,18 @@ public class GameManager : MonoBehaviour
             {
                 currentPlayer.DrawCard(card);
             }
+        }
+
+        CheckOverSeven(currentPlayer);
+    }
+
+    void CheckOverSeven(Player player)
+    {
+        if (player.Hand.Count <= 7) return;
+
+        while(player.Hand.Count > 7)
+        {
+            playerAction.PromptDiscard(player.Hand);
         }
     }
 
@@ -245,6 +257,7 @@ public class GameManager : MonoBehaviour
         if (card != null)
         {
             playerDeck.Discard(card);
+            cardUIManager.DiscardCard(card);
         }
     }
 
