@@ -363,9 +363,10 @@ public class GameManager : MonoBehaviour
         playerInfo.OnAction();
         if (actionText != null)
         {
-            
             actionText.text = $"Actions: {actionCount}";
         }
+        
+        board.ShowDiseasedCities();
     }
 
     public void ShowMessage(string message)

@@ -54,6 +54,7 @@ public class PlayerAction : MonoBehaviour
     private City currentPendingCity;
     private City pendingTreatCity;
     private string pendingTreatContext;
+    private DiseaseColor pendingCure;
 
     public void Start()
     {
@@ -498,8 +499,7 @@ public class PlayerAction : MonoBehaviour
         if (isCured && !isEradicated)
         {
             ShowMessage($"Disease is cured! Treatment is more effective.");
-            // Cured disease allows treating anywhere, but we'll keep standard cube removal
-            // The role can still modify this
+            cubesToRemove = currentCubes;
         }
         
         // Let the role modify how many cubes to remove
@@ -547,8 +547,68 @@ public class PlayerAction : MonoBehaviour
 
     public void OnCureClick()
     {
-        // Implementation for discovering cure
-        Debug.Log("Discover cure - to be implemented");
+        if (currentP.Hand.Count < 5)
+        {
+            ShowMessage("Not enough cards to cure a disease.");
+            return;
+        }
+        int red = 0;
+        int blue = 0;
+        int yellow = 0;
+        int black = 0;
+        foreach (PlayerCard card in currentP.Hand)
+        {
+            switch(card.City.diseaseColor){
+                case DiseaseColor.Red:
+                    red++;
+                    break;
+                case DiseaseColor.Blue:
+                    blue++;
+                    break;
+                case DiseaseColor.Yellow:
+                    yellow++;
+                    break;
+                default:
+                    black++;
+                    break;    
+            }
+        }
+        if(red > 5)
+        {
+            pendingCure = DiseaseColor.Red;
+            ShowConfirmation("Cure the red disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Red);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(blue > 5)
+        {
+            pendingCure = DiseaseColor.Blue;
+            ShowConfirmation("Cure the blue disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Blue);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(yellow > 5)
+        {
+            pendingCure = DiseaseColor.Yellow;
+            ShowConfirmation("Cure the yellow disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Yellow);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(black > 5)
+        {
+            pendingCure = DiseaseColor.Black;
+            ShowConfirmation("Cure the black disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Black);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
     }
     
     // Helper methods
