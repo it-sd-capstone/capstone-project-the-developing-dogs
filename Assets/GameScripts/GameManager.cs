@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public PlayerDeck playerDeck;
     public List<Player> players = new List<Player>();
     public PlayerAction playerAction;
+    public PlayerInfo playerInfo;
 
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
         SetupInitialInfections();
 
         playerAction = FindAnyObjectByType<PlayerAction>();
+        playerInfo = FindAnyObjectByType<PlayerInfo>();
     }
 
     private List<PlayerCard> CreateAllPlayerCards()
@@ -172,6 +174,7 @@ public class GameManager : MonoBehaviour
         }
 
         actionCount = 4;
+        playerInfo.OnPlayerChange(current);
         UpdateActionDisplay();
     }
 
@@ -338,8 +341,10 @@ public class GameManager : MonoBehaviour
 
     public void UpdateActionDisplay()
     {
+        playerInfo.OnAction();
         if (actionText != null)
         {
+            
             actionText.text = $"Actions: {actionCount}";
         }
     }
