@@ -29,6 +29,22 @@ public class CardUI : MonoBehaviour
         if (card.City != null)
         {
             cardNameText.text = card.City.cityName;
+            switch (card.City.diseaseColor)
+            {
+                case DiseaseColor.Red:
+                    backgroundImage.color = Color.red;
+                    break;
+                case DiseaseColor.Blue:
+                    backgroundImage.color = Color.blue;
+                    break;
+                case DiseaseColor.Yellow:
+                    backgroundImage.color = Color.yellow;
+                    break;
+                default:
+                    backgroundImage.color = Color.black;
+                    break;
+
+            }
         }
         else
         {

@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public int infectionRateIndex = 0;
     private int curesFound = 0;
     public int actionCount;
+    private CardUIManager cardUIManager;
 
     private readonly int[] infectionRateTrack = { 2, 2, 2, 3, 3, 4, 4 };
 
@@ -65,11 +66,7 @@ public class GameManager : MonoBehaviour
         SetupPlayers();
 
         List<PlayerCard> allCards = CreateAllPlayerCards();
-
-        //playerDeck.Initialize(allCards);
-        //playerDeck.InsertEpidemicCards(GetEpidemicCount());
-
-        //DealStartingCards();
+        cardUIManager = FindAnyObjectByType<CardUIManager>();
 
         playerDeck.Initialize(allCards);
 
@@ -163,6 +160,14 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Starting turn for: " + current.PlayerName);
 
+        if(cardUIManager != null)
+        {
+            foreach (PlayerCard card in current.Hand)
+            {
+                cardUIManager.ShowPlayerCard(card);
+            }
+        }
+
         if (gameInfoUI != null)
         {
             gameInfoUI.UpdateGameInfo(current, playerDeck, infectionDeck);
@@ -194,6 +199,7 @@ public class GameManager : MonoBehaviour
 
         DrawPlayerCardsForCurrentPlayer();
         RunInfectionPhase();
+        cardUIManager.ClearHand();
 
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
         StartTurn();
@@ -304,12 +310,12 @@ public class GameManager : MonoBehaviour
                 {
                     player.DrawCard(card);
 
-                    CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
+                    // CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
 
-                    if (cardUIManager != null && card.City != null)
-                    {
-                        cardUIManager.ShowPlayerCard(card);
-                    }
+                    // if (cardUIManager != null && card.City != null)
+                    // {
+                    //     cardUIManager.ShowPlayerCard(card);
+                    // }
                 }
             }
         }

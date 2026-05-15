@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CardUIManager : MonoBehaviour
@@ -17,6 +18,14 @@ public class CardUIManager : MonoBehaviour
 
         CardUI cardUI = cardObject.GetComponent<CardUI>();
         cardUI.Setup(card);
+    }
+
+    public void ClearHand()
+    {
+        foreach (Transform child in currentHandArea.transform)
+        {
+            Destroy(child);
+        }
     }
 
     public void ShowInfectionCard(InfectionCard card)
