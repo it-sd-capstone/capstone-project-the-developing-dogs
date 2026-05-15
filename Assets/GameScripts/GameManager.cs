@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public InfectionDeck infectionDeck;
     public PlayerDeck playerDeck;
     public List<Player> players = new List<Player>();
-    public PlayerAction pa;
+    public PlayerAction playerAction;
 
     [Header("Difficulty")]
     public Difficulty difficulty = Difficulty.Standard;
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         infectionDeck.Initialize(board.cities);
         SetupInitialInfections();
 
-        pa = FindAnyObjectByType<PlayerAction>();
+        playerAction = FindAnyObjectByType<PlayerAction>();
     }
 
     private List<PlayerCard> CreateAllPlayerCards()
@@ -166,9 +166,9 @@ public class GameManager : MonoBehaviour
             gameInfoUI.UpdateGameInfo(current, playerDeck, infectionDeck);
         }
 
-        if (pa != null)
+        if (playerAction != null)
         {
-            pa.UpdateCurrentPlayer(players[currentPlayerIndex]);
+            playerAction.UpdateCurrentPlayer(players[currentPlayerIndex]);
         }
 
         actionCount = 4;
@@ -184,9 +184,9 @@ public class GameManager : MonoBehaviour
         }
 
         // Clear any pending actions
-        if (pa != null)
+        if (playerAction != null)
         {
-            pa.ClearActionState();
+            playerAction.ClearActionState();
         }
 
         DrawPlayerCardsForCurrentPlayer();

@@ -149,10 +149,10 @@ public class PlayerAction : MonoBehaviour
         
         // Consume one action
         gm.actionCount--;
-        gm.UpdateActionDisplay(); // You'll need to implement this
+        gm.UpdateActionDisplay();
         
         // Update visuals
-        board.UpdatePlayerPosition(currentP); // You'll need to implement this
+        board.UpdatePlayerPosition(currentP);
         
         Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}. Actions remaining: {gm.actionCount}");
         
@@ -254,6 +254,7 @@ public class PlayerAction : MonoBehaviour
             });
     }
     
+    // research station building
     private void ExecuteBuild(City location)
     {
         // Check if building a station is valid
@@ -501,6 +502,7 @@ public class PlayerAction : MonoBehaviour
         ClearActionState();
     }
 
+    // TODO: IMPLEMENT SHARE
     public void OnShareClick()
     {
         // Implementation for sharing knowledge
