@@ -18,7 +18,9 @@ public class PlayerInfo : MonoBehaviour
         }
 
         pName.text = player.PlayerName;
-        pRole.text = player.Role.ToString();
+        if (player.Role == null)pRole.text = "?";
+        else pRole.text = player.Role.ToString();
+        
         actions.text = "4";
     }
 
