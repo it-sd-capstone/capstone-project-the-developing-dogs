@@ -33,6 +33,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Image background;
     [SerializeField] private RectTransform boardContainer;
     [SerializeField] private GameObject cityMarkerPrefab;
+    private Image hasDisease;
 
     private CityCard cc;
     private GameManager gm;
@@ -40,6 +41,7 @@ public class GameBoard : MonoBehaviour
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
     private Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
+    
 
     private void Awake()
     {
@@ -304,5 +306,17 @@ public class GameBoard : MonoBehaviour
     public bool IsCured(DiseaseColor color)
     {
         return curePool.ContainsKey(color) && curePool[color];
+    }
+
+    public void ShowDiseasedCities()
+    {
+        foreach (City city in cities)
+        {
+            hasDisease = cityMarkers[city].transform.Find("DiseaseHere")?.GetComponent<Image>();
+            if (city.GetDiseaseCount(DiseaseColor.Red) > 0 || city.GetDiseaseCount(DiseaseColor.Blue) > 0 || city.GetDiseaseCount(DiseaseColor.Yellow) > 0 || city.GetDiseaseCount(DiseaseColor.Black) > 0)
+            {
+                hasDisease.enabled = true;
+            } else hasDisease.enabled = false;
+        }
     }
 }

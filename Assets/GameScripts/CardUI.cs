@@ -12,7 +12,7 @@ public class CardUI : MonoBehaviour
     private bool isSelected = false;
 
     private Color normalColor;
-    public Color selectedColor = Color.yellow;
+    public Color selectedColor = Color.grey;
 
     private void Awake()
     {
@@ -29,6 +29,26 @@ public class CardUI : MonoBehaviour
         if (card.City != null)
         {
             cardNameText.text = card.City.cityName;
+            switch (card.City.diseaseColor)
+            {
+                case DiseaseColor.Red:
+                    backgroundImage.color = Color.red;
+                    normalColor = Color.red;
+                    break;
+                case DiseaseColor.Blue:
+                    backgroundImage.color = Color.blue;
+                    normalColor = Color.blue;
+                    break;
+                case DiseaseColor.Yellow:
+                    backgroundImage.color = Color.yellow;
+                    normalColor = Color.yellow;
+                    break;
+                default:
+                    backgroundImage.color = Color.black;
+                    normalColor = Color.black;
+                    break;
+
+            }
         }
         else
         {

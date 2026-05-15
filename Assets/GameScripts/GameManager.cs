@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public int infectionRateIndex = 0;
     private int curesFound = 0;
     public int actionCount;
+    private CardUIManager cardUIManager;
 
     private readonly int[] infectionRateTrack = { 2, 2, 2, 3, 3, 4, 4 };
 
@@ -65,11 +66,7 @@ public class GameManager : MonoBehaviour
         SetupPlayers();
 
         List<PlayerCard> allCards = CreateAllPlayerCards();
-
-        //playerDeck.Initialize(allCards);
-        //playerDeck.InsertEpidemicCards(GetEpidemicCount());
-
-        //DealStartingCards();
+        cardUIManager = FindAnyObjectByType<CardUIManager>();
 
         playerDeck.Initialize(allCards);
 
@@ -163,6 +160,15 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Starting turn for: " + current.PlayerName);
 
+        if(cardUIManager != null)
+        {
+            cardUIManager.ClearHand();
+            foreach (PlayerCard card in current.Hand)
+            {
+                cardUIManager.ShowPlayerCard(card);
+            }
+        }
+
         if (gameInfoUI != null)
         {
             gameInfoUI.UpdateGameInfo(current, playerDeck, infectionDeck);
@@ -216,6 +222,18 @@ public class GameManager : MonoBehaviour
                 currentPlayer.DrawCard(card);
             }
         }
+
+        CheckOverSeven(currentPlayer);
+    }
+
+    void CheckOverSeven(Player player)
+    {
+        if (player.Hand.Count <= 7) return;
+
+        while(player.Hand.Count > 7)
+        {
+            playerAction.PromptDiscard(player.Hand);
+        }
     }
 
     void RunInfectionPhase()
@@ -239,6 +257,7 @@ public class GameManager : MonoBehaviour
         if (card != null)
         {
             playerDeck.Discard(card);
+            cardUIManager.DiscardCard(card);
         }
     }
 
@@ -304,12 +323,12 @@ public class GameManager : MonoBehaviour
                 {
                     player.DrawCard(card);
 
-                    CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
+                    // CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
 
-                    if (cardUIManager != null && card.City != null)
-                    {
-                        cardUIManager.ShowPlayerCard(card);
-                    }
+                    // if (cardUIManager != null && card.City != null)
+                    // {
+                    //     cardUIManager.ShowPlayerCard(card);
+                    // }
                 }
             }
         }
@@ -344,9 +363,10 @@ public class GameManager : MonoBehaviour
         playerInfo.OnAction();
         if (actionText != null)
         {
-            
             actionText.text = $"Actions: {actionCount}";
         }
+        
+        board.ShowDiseasedCities();
     }
 
     public void ShowMessage(string message)

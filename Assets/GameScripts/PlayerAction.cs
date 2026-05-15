@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -26,6 +28,11 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Button yesButton;
     [SerializeField] private Button noButton;
 
+    [Header("NoticePanel")]
+    [SerializeField] private GameObject noticePanel;
+    [SerializeField] private TextMeshProUGUI noticeExplainer;
+    [SerializeField] private Button okButton;
+
     [Header("Disease Selection")]
     [SerializeField] private GameObject diseaseSelectionPanel;
     [SerializeField] private Button redDiseaseButton;
@@ -47,9 +54,11 @@ public class PlayerAction : MonoBehaviour
     private City currentPendingCity;
     private City pendingTreatCity;
     private string pendingTreatContext;
+    private DiseaseColor pendingCure;
 
     public void Start()
     {
+        noticePanel.SetActive(false);
         ynPanel.SetActive(false);
         if (diseaseSelectionPanel != null)
             diseaseSelectionPanel.SetActive(false);
@@ -126,20 +135,36 @@ public class PlayerAction : MonoBehaviour
     {
         if (!isAwaitingMove)
             return;
-            
-        if (pendingActionType == "Drive")
+
+        switch (pendingActionType)
         {
-            // Check if selected city is a valid destination
-            if (currentValidDestinations.Contains(selectedCity))
-            {
-                // Execute the move
-                ExecuteDrive(selectedCity);
-            }
-            else
-            {
-                ShowMessage("Cannot drive to that city! Must be connected by a line.");
-            }
+            case "Drive":
+                // Check if selected city is a valid destination
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    // Execute the move
+                    ExecuteDrive(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot drive to that city! Must be connected by a line.");
+                }
+                break; 
+            case "Fly":
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    ExecuteFly(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot fly to that city! Must be a card in your hand.");
+                }
+                break;
+            case "Build":
+                BuildStation(selectedCity);
+                break;           
         }
+        
     }
 
     private void ExecuteDrive(City destination)
@@ -154,7 +179,7 @@ public class PlayerAction : MonoBehaviour
         // Update visuals
         board.UpdatePlayerPosition(currentP);
         
-        Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}. Actions remaining: {gm.actionCount}");
+        Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}.");
         
         ShowMessage($"Drove to {destination.cityName}! {gm.actionCount} actions remaining.");
         
@@ -168,7 +193,7 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
-     public void OnFlyClick()
+    public void OnFlyClick()
     {
         if (currentP == null || gm.actionCount <= 0)
         {
@@ -182,8 +207,20 @@ public class PlayerAction : MonoBehaviour
         // Get all cities that the player can fly to using cards
         foreach (PlayerCard card in currentP.Hand)
         {
-            if (card.City != null && !currentValidDestinations.Contains(card.City))
+            if (card.City == null) break;
+
+            if (card.City == currentP.CurrentCity)
             {
+                currentValidDestinations = board.cities.ToList();
+                ShowMessage("You have your current city's card so you may fly anywhere!");
+            }
+
+            if (!currentValidDestinations.Contains(card.City))
+            {
+                if (card.City == currentP.CurrentCity)
+                {
+                    currentValidDestinations = board.cities;
+                }
                 currentValidDestinations.Add(card.City);
                 
                 // Also highlight the city
@@ -272,6 +309,7 @@ public class PlayerAction : MonoBehaviour
         {
             // Need to discard the city card
             PlayerCard cityCard = currentP.Hand.Find(c => c.City == location);
+            CityCard cc = FindAnyObjectByType<CityCard>();
             
             if (cityCard == null)
             {
@@ -285,9 +323,10 @@ public class PlayerAction : MonoBehaviour
                 (confirmed) => {
                     if (confirmed)
                     {
+                        BuildStation(location);
                         currentP.DiscardCard(cityCard);
                         gm.DiscardPlayerCard(cityCard);
-                        BuildStation(location);
+                        cc.UpdateCC(location);
                     }
                     else
                     {
@@ -310,7 +349,7 @@ public class PlayerAction : MonoBehaviour
             gm.actionCount--;
             gm.UpdateActionDisplay();
             board.UpdateResearchStationVisual(location);
-            ShowMessage($"Built research station in {location.cityName}! {gm.actionCount} actions remaining.");
+            ShowMessage($"Built research station in {location.cityName}!");
             ClearActionState();
         }
         else
@@ -335,9 +374,7 @@ public class PlayerAction : MonoBehaviour
         // Highlight only the current city for building
         currentValidDestinations.Clear();
         currentValidDestinations.Add(currentP.CurrentCity);
-        board.Highlight(currentP.CurrentCity);
-        
-        ShowMessage("Select your current city to build a research station.");
+        ExecuteBuild(currentP.CurrentCity);
     }
     
     // TREAT DISEASE ACTION
@@ -462,8 +499,7 @@ public class PlayerAction : MonoBehaviour
         if (isCured && !isEradicated)
         {
             ShowMessage($"Disease is cured! Treatment is more effective.");
-            // Cured disease allows treating anywhere, but we'll keep standard cube removal
-            // The role can still modify this
+            cubesToRemove = currentCubes;
         }
         
         // Let the role modify how many cubes to remove
@@ -489,7 +525,7 @@ public class PlayerAction : MonoBehaviour
         else if (currentP.Role is OperationsExpertRole && city != currentP.CurrentCity)
             roleText = " (Operations Expert treated adjacent city!)";
             
-        ShowMessage($"Treated {cubesToRemove} {color} disease cube(s) in {city.cityName}!{roleText} Actions remaining: {gm.actionCount}");
+        ShowMessage($"Treated {cubesToRemove} {color} disease cube(s) in {city.cityName}!{roleText} ");
         Debug.Log($"{currentP.PlayerName} treated {cubesToRemove} {color} cube(s) in {city.cityName}");
         
         // Check if player has no actions left
@@ -511,8 +547,68 @@ public class PlayerAction : MonoBehaviour
 
     public void OnCureClick()
     {
-        // Implementation for discovering cure
-        Debug.Log("Discover cure - to be implemented");
+        if (currentP.Hand.Count < 5)
+        {
+            ShowMessage("Not enough cards to cure a disease.");
+            return;
+        }
+        int red = 0;
+        int blue = 0;
+        int yellow = 0;
+        int black = 0;
+        foreach (PlayerCard card in currentP.Hand)
+        {
+            switch(card.City.diseaseColor){
+                case DiseaseColor.Red:
+                    red++;
+                    break;
+                case DiseaseColor.Blue:
+                    blue++;
+                    break;
+                case DiseaseColor.Yellow:
+                    yellow++;
+                    break;
+                default:
+                    black++;
+                    break;    
+            }
+        }
+        if(red > 5)
+        {
+            pendingCure = DiseaseColor.Red;
+            ShowConfirmation("Cure the red disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Red);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(blue > 5)
+        {
+            pendingCure = DiseaseColor.Blue;
+            ShowConfirmation("Cure the blue disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Blue);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(yellow > 5)
+        {
+            pendingCure = DiseaseColor.Yellow;
+            ShowConfirmation("Cure the yellow disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Yellow);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
+        if(black > 5)
+        {
+            pendingCure = DiseaseColor.Black;
+            ShowConfirmation("Cure the black disease for 5 cards?", (confirmed)=> {
+                if (confirmed) board.CureDisease(DiseaseColor.Black);
+                else ShowMessage("Cure Cancelled.");
+                });
+            return;
+        }
     }
     
     // Helper methods
@@ -535,6 +631,9 @@ public class PlayerAction : MonoBehaviour
     private void ShowMessage(string message)
     {
         Debug.Log(message);
+
+        noticeExplainer.text = message;
+        noticePanel.SetActive(true);
         // You can add a UI text element to show messages to the player
         // For example: messageText.text = message;
     }
@@ -605,5 +704,15 @@ public class PlayerAction : MonoBehaviour
         }
         
         ShowMessage($"Select an adjacent city to treat (Operations Expert ability).");
+    }
+
+    public void PromptDiscard(List<PlayerCard> hand)
+    {
+        return;
+    }
+
+    public void CloseNotice()
+    {
+        noticePanel.SetActive(false);
     }
 }
