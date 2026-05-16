@@ -12,7 +12,7 @@ public class CardUI : MonoBehaviour
     private bool isSelected = false;
 
     private Color normalColor;
-    public Color selectedColor = Color.grey;
+    public Color selectedColor = Color.green;
 
     private void Awake()
     {

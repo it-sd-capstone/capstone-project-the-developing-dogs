@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour
     public Button fourPlayerButton;
 
     public Color normalButtonColor = Color.white;
-    public Color selectedButtonColor = Color.yellow;
+    public Color selectedButtonColor = Color.green;
 
     [Header("Difficulty Buttons")]
     public Button introductoryButton;
@@ -62,6 +62,7 @@ public class MainMenu : MonoBehaviour
     {
         selectedPlayers = count;
         GameSettings.PlayerCount = count;
+        GameSettings.HasSelectedPlayerCount = true;
 
         ResetPlayerButtonColors();
 
@@ -82,6 +83,7 @@ public class MainMenu : MonoBehaviour
     {
         selectedDifficulty = difficulty;
         GameSettings.Difficulty = difficulty;
+        GameSettings.HasSelectedDifficulty = true;
 
         ResetDifficultyButtonColors();
 
@@ -126,7 +128,13 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        finalSelectionText.gameObject.SetActive(false);
+        GameSettings.HasSelectedPlayerCount = false;
+        GameSettings.HasSelectedDifficulty = false;
+        GameSettings.PlayerCount = 0;
+        GameSettings.Difficulty = "";
+
+        if (finalSelectionText != null)
+            finalSelectionText.gameObject.SetActive(false);
     }
 
     private void UpdateFinalSelectionText()

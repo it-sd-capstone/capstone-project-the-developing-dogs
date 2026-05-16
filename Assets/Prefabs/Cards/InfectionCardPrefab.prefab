@@ -129,6 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardUI
   cardNameText: {fileID: 7844396764743083799}
   artworkImage: {fileID: 3177059349798712035}
+  backgroundImage: {fileID: 0}
+  selectedColor: {r: 0.13942708, g: 0.96981126, b: 0, a: 1}
 --- !u!114 &513051879760059699
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -52,10 +52,13 @@ public class GameManager : MonoBehaviour
         {
             GameObject playerObject = new GameObject("Player " + (i + 1));
             Player player = playerObject.AddComponent<Player>();
-            
-            player.Initialize($"Player {i+1}", board.cityLookup["Atlanta"], board);
 
+            player.Initialize($"Player {i + 1}", board.cityLookup["Atlanta"], board);
             player.SetPlayerName("Player " + (i + 1));
+
+            string selectedRoleName = GameSettings.SelectedRoles[i];
+            Role selectedRole = CreateRoleFromName(selectedRoleName);
+            player.SetRole(selectedRole);
 
             players.Add(player);
         }
@@ -115,6 +118,36 @@ public class GameManager : MonoBehaviour
         else
         {
             difficulty = Difficulty.Standard;
+        }
+    }
+
+    private Role CreateRoleFromName(string roleName)
+    {
+        switch (roleName)
+        {
+            case "Medic":
+                return new MedicRole();
+
+            case "Scientist":
+                return new ScientistRole();
+
+            case "Dispatcher":
+                return new DispatcherRole();
+
+            case "Researcher":
+                return new ResearcherRole();
+
+            case "Quarantine Specialist":
+                return new QuarantineSpecialistRole();
+
+            case "Contingency Planner":
+                return new ContingencyPlannerRole();
+
+            case "Operations Expert":
+                return new OperationsExpertRole();
+
+            default:
+                return null;
         }
     }
 

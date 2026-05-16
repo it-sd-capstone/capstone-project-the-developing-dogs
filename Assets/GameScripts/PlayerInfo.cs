@@ -11,16 +11,19 @@ public class PlayerInfo : MonoBehaviour
 
     public void OnPlayerChange(Player player)
     {
-        if(player == null)
+        if (player == null)
         {
             Debug.Log("missing player");
             return;
         }
 
         pName.text = player.PlayerName;
-        if (player.Role == null)pRole.text = "?";
-        else pRole.text = player.Role.ToString();
-        
+
+        if (player.Role == null)
+            pRole.text = "?";
+        else
+            pRole.text = player.Role.RoleName;
+
         actions.text = "4";
     }
 
