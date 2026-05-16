@@ -4,10 +4,13 @@ using UnityEngine;
 // This role can be expanded later for research station and special action abilities.
 public class OperationsExpertRole : Role
 {
+    public new bool CanBuildStationForFree = true;
+    
     public OperationsExpertRole()
     {
         RoleName = "Operations Expert";
         RoleColor = new Color(0.1f, 0.6f, 0.1f);
+        
     }
 
     public override void UseSpecialAbility(GameBoard board)

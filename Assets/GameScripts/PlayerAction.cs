@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,11 +42,19 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Button blackDiseaseButton;
     [SerializeField] private TextMeshProUGUI diseasePromptText;
 
+    [Header("Player Select")]
+    [SerializeField] private GameObject playerSelectPanel;
+    [SerializeField] private TextMeshProUGUI pSelectText;
+    [SerializeField] private GameObject buttonRect;
+    [SerializeField] private GameObject pSelectButtonPrefab;
+
     // Action states
     private bool isAwaitingMove = false;
     private bool isAwaitingDiseaseSelection = false;
     private string pendingActionType = "";
     private List<City> currentValidDestinations = new List<City>();
+    private List<Player> shareable = new List<Player>();
+    private int neededForCure;
     
     // Callbacks for confirmation
     private Action<bool> currentConfirmationCallback;
@@ -55,11 +64,15 @@ public class PlayerAction : MonoBehaviour
     private City pendingTreatCity;
     private string pendingTreatContext;
     private DiseaseColor pendingCure;
+    private bool shuttleFlight;
+    private bool attemptShare;
+    private PlayerCard cardToShare;
 
     public void Start()
     {
         noticePanel.SetActive(false);
         ynPanel.SetActive(false);
+        playerSelectPanel.SetActive(false);
         if (diseaseSelectionPanel != null)
             diseaseSelectionPanel.SetActive(false);
         
@@ -86,11 +99,59 @@ public class PlayerAction : MonoBehaviour
         ClearActionState();
     }
     
+    // Call when a city is clicked on the board
+    public void OnCitySelected(City selectedCity)
+    {
+        if (!isAwaitingMove)
+            return;
+
+        switch (pendingActionType)
+        {
+            case "Drive":
+                // Check if selected city is a valid destination
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    // Execute the move
+                    ExecuteDrive(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot drive to that city! Must be connected by a line.");
+                }
+                break; 
+            case "Fly":
+                if (currentValidDestinations.Contains(selectedCity))
+                {
+                    ExecuteFly(selectedCity);
+                }
+                else
+                {
+                    ShowMessage("Cannot fly to that city! Must be a card in your hand.");
+                }
+                break;
+            case "Build":
+                BuildStation(selectedCity);
+                break;           
+        }
+        
+    }
+
+    // Driving (move between connected cities)
     public void OnDriveClick()
     {
         if (currentP == null)
         {
             Debug.LogError("No current player selected!");
+            return;
+        }
+
+        if (isAwaitingMove)
+        {
+            board.ClearAllHighlights();
+            currentValidDestinations.Clear();
+            ClearActionState();
+            isAwaitingMove = false;
+            pendingActionType = "";
             return;
         }
         
@@ -130,43 +191,6 @@ public class PlayerAction : MonoBehaviour
         ShowMessage($"Select a city to drive to. ({currentValidDestinations.Count} options)");
     }
 
-    // Call when a city is clicked on the board
-    public void OnCitySelected(City selectedCity)
-    {
-        if (!isAwaitingMove)
-            return;
-
-        switch (pendingActionType)
-        {
-            case "Drive":
-                // Check if selected city is a valid destination
-                if (currentValidDestinations.Contains(selectedCity))
-                {
-                    // Execute the move
-                    ExecuteDrive(selectedCity);
-                }
-                else
-                {
-                    ShowMessage("Cannot drive to that city! Must be connected by a line.");
-                }
-                break; 
-            case "Fly":
-                if (currentValidDestinations.Contains(selectedCity))
-                {
-                    ExecuteFly(selectedCity);
-                }
-                else
-                {
-                    ShowMessage("Cannot fly to that city! Must be a card in your hand.");
-                }
-                break;
-            case "Build":
-                BuildStation(selectedCity);
-                break;           
-        }
-        
-    }
-
     private void ExecuteDrive(City destination)
     {
         // Move the player
@@ -193,6 +217,7 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    //Flight (movement between non-connected cities)
     public void OnFlyClick()
     {
         if (currentP == null || gm.actionCount <= 0)
@@ -201,20 +226,38 @@ public class PlayerAction : MonoBehaviour
             return;
         }
         
+        if (isAwaitingMove)
+        {
+            board.ClearAllHighlights();
+            currentValidDestinations.Clear();
+            ClearActionState();
+            isAwaitingMove = false;
+            pendingActionType = "";
+            return;
+        }
+
         ClearActionState();
         currentValidDestinations.Clear();
+
+        foreach (City city in board.cities)
+        {
+            if (city == currentP.CurrentCity) break;
+            if (city.hasResearchStation) currentValidDestinations.Add(city);
+        }
         
         // Get all cities that the player can fly to using cards
         foreach (PlayerCard card in currentP.Hand)
         {
             if (card.City == null) break;
 
+            // sacrifice current city card to go anywhere
             if (card.City == currentP.CurrentCity)
             {
                 currentValidDestinations = board.cities.ToList();
                 ShowMessage("You have your current city's card so you may fly anywhere!");
             }
 
+            // sacrifice a card to travel to that city
             if (!currentValidDestinations.Contains(card.City))
             {
                 if (card.City == currentP.CurrentCity)
@@ -243,6 +286,36 @@ public class PlayerAction : MonoBehaviour
     {
         // Find the card that matches either current city or destination
         PlayerCard cardToDiscard = null;
+
+        if (currentP.CurrentCity.hasResearchStation && destination.hasResearchStation)
+            shuttleFlight = true;
+
+        // ignore discard procedure if flight between
+        if (shuttleFlight)
+        {
+            ShowConfirmation($"Fly from {currentP.CurrentCity.cityName} to {destination.cityName}?",
+            (confirmed) =>
+            {
+                if (confirmed)
+                {
+                // Move the player
+                currentP.MoveTo(destination);
+                    
+                // Consume action
+                gm.actionCount--;
+                gm.UpdateActionDisplay();
+                board.UpdatePlayerPosition(currentP);
+                    
+                Debug.Log($"{currentP.PlayerName} flew to {destination.cityName}. Actions: {gm.actionCount}");
+                ShowMessage($"Flew to {destination.cityName}! {gm.actionCount} actions remaining.");
+                    
+                shuttleFlight = false;
+                ClearActionState();
+                return;
+                }
+            });
+            return;
+        }
         
         foreach (PlayerCard card in currentP.Hand)
         {
@@ -259,7 +332,7 @@ public class PlayerAction : MonoBehaviour
             ClearActionState();
             return;
         }
-        
+
         // Show confirmation for discarding card
         ShowConfirmation($"Discard {cardToDiscard.City.cityName} card to fly to {destination.cityName}?", 
             (confirmed) => {
@@ -541,13 +614,72 @@ public class PlayerAction : MonoBehaviour
     // TODO: IMPLEMENT SHARE
     public void OnShareClick()
     {
-        // Implementation for sharing knowledge
-        Debug.Log("Share knowledge - to be implemented");
+        shareable.Clear();
+        foreach (Player player in gm.players)
+        {
+            if (currentP.CurrentCity == player.CurrentCity)
+            {
+                shareable.Add(player);
+            }
+        }
+        if (currentP.Hand.Count() <= 0)
+        {
+            ShowMessage("No cards to trade.");
+            return;
+        }
+        if (shareable.Count <= 0)
+        {
+            ShowMessage("Nobody to trade with in your city.");
+            return;
+        }
+
+        attemptShare = true;
+
+        ShowMessage("Click on one of your cards to give to another player.");
+    }
+
+    public void CardShare(PlayerCard card)
+    {
+        if (!attemptShare) return;
+
+        cardToShare = card;
+
+        foreach(Player player in shareable)
+        {
+            GameObject button = Instantiate(pSelectButtonPrefab, playerSelectPanel.transform);
+            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.text = player.PlayerName;
+            button.GetComponent<Button>().onClick.AddListener(() => ExecuteShare(player));
+        }
+        playerSelectPanel.SetActive(true);
+    }
+
+    public void ExecuteShare(Player player)
+    {
+        CardUIManager CUIM = FindAnyObjectByType<CardUIManager>();
+        CUIM.DiscardCard(cardToShare);
+        currentP.Hand.Remove(cardToShare);
+        player.Hand.Add(cardToShare);
+        playerSelectPanel.SetActive(false);
+        ShowMessage($"{cardToShare.City.cityName} card shared with {player.PlayerName}!");
+        cardToShare = null;
+        attemptShare = false;
+        gm.actionCount--;
+        gm.UpdateActionDisplay();
+    }
+
+    public void OnShareCancel()
+    {
+        shareable.Clear();
+        attemptShare = false;
     }
 
     public void OnCureClick()
     {
-        if (currentP.Hand.Count < 5)
+        if (currentP.Role?.RoleName == "Scientist") neededForCure = 4;
+        else neededForCure = 5;
+
+        if (currentP.Hand.Count < neededForCure)
         {
             ShowMessage("Not enough cards to cure a disease.");
             return;
@@ -573,37 +705,37 @@ public class PlayerAction : MonoBehaviour
                     break;    
             }
         }
-        if(red > 5)
+        if(red > neededForCure)
         {
             pendingCure = DiseaseColor.Red;
-            ShowConfirmation("Cure the red disease for 5 cards?", (confirmed)=> {
+            ShowConfirmation($"Cure the red disease for {neededForCure} red cards?", (confirmed)=> {
                 if (confirmed) board.CureDisease(DiseaseColor.Red);
                 else ShowMessage("Cure Cancelled.");
                 });
             return;
         }
-        if(blue > 5)
+        if(blue > neededForCure)
         {
             pendingCure = DiseaseColor.Blue;
-            ShowConfirmation("Cure the blue disease for 5 cards?", (confirmed)=> {
+            ShowConfirmation($"Cure the blue disease for {neededForCure} blue cards?", (confirmed)=> {
                 if (confirmed) board.CureDisease(DiseaseColor.Blue);
                 else ShowMessage("Cure Cancelled.");
                 });
             return;
         }
-        if(yellow > 5)
+        if(yellow > neededForCure)
         {
             pendingCure = DiseaseColor.Yellow;
-            ShowConfirmation("Cure the yellow disease for 5 cards?", (confirmed)=> {
+            ShowConfirmation($"Cure the yellow disease for {neededForCure} yellow cards?", (confirmed)=> {
                 if (confirmed) board.CureDisease(DiseaseColor.Yellow);
                 else ShowMessage("Cure Cancelled.");
                 });
             return;
         }
-        if(black > 5)
+        if(black > neededForCure)
         {
             pendingCure = DiseaseColor.Black;
-            ShowConfirmation("Cure the black disease for 5 cards?", (confirmed)=> {
+            ShowConfirmation($"Cure the black disease for {neededForCure} black cards?", (confirmed)=> {
                 if (confirmed) board.CureDisease(DiseaseColor.Black);
                 else ShowMessage("Cure Cancelled.");
                 });

@@ -31,7 +31,7 @@ public class GameBoard : MonoBehaviour
 
     [Header("Board visuals")]
     [SerializeField] private Image background;
-    [SerializeField] private RectTransform boardContainer;
+    [SerializeField] public RectTransform boardContainer;
     [SerializeField] private GameObject cityMarkerPrefab;
     private Image hasDisease;
 
