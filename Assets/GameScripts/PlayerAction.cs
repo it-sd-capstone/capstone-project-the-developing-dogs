@@ -56,7 +56,7 @@ public class PlayerAction : MonoBehaviour
     private List<Player> shareable = new List<Player>();
     private int neededForCure;
     private bool taking = false;
-    public bool dispatching;
+    public bool dispatching = false;
     private Player dispatched;
     
     // Callbacks for confirmation

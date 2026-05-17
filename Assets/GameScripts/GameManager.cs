@@ -3,6 +3,7 @@ using NUnit.Framework.Internal;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,6 +27,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverScreen;
     [SerializeField] private TextMeshProUGUI gameOverTitle;
     [SerializeField] private TextMeshProUGUI gameOverExplanation;
+
+    [Header("Player Pawn Settings")]
+    public GameObject playerPawnPrefab;
+    public RectTransform pawnContainer;
 
     public int currentPlayerIndex = 0;
     public int infectionRateIndex = 0;
@@ -69,6 +74,8 @@ public class GameManager : MonoBehaviour
 
     void SetupGame()
     {
+        SpawnPlayerPawns();
+
         List<PlayerCard> allCards = CreateAllPlayerCards();
         cardUIManager = FindAnyObjectByType<CardUIManager>();
 
@@ -85,6 +92,52 @@ public class GameManager : MonoBehaviour
         playerAction = FindAnyObjectByType<PlayerAction>();
         playerInfo = FindAnyObjectByType<PlayerInfo>();
     }
+
+    private void SpawnPlayerPawns()
+    {
+        foreach (Player p in players)
+        {
+            GameObject pawn = Instantiate(playerPawnPrefab, pawnContainer);
+
+            //Set pawn color based on role
+            Image img = pawn.GetComponent<Image>();
+            if (img != null)
+                img.color = GetPawnColor(p.Role);
+
+            //Register pawn with GameBoard
+            board.playerMarkers[p] = pawn;
+
+            //Move pawn to starting city
+            board.UpdatePlayerPosition(p);
+        }
+    }
+
+    private Color GetPawnColor(Role role)
+    {
+        if (role is MedicRole)
+            return new Color32(255, 140, 0, 255);
+
+        if (role is ScientistRole)
+            return new Color32(255, 255, 255, 255);
+
+        if (role is ResearcherRole)
+            return new Color32(124, 255, 0, 255);
+
+        if (role is DispatcherRole)
+            return new Color32(170, 0, 255, 255);
+
+        if (role is OperationsExpertRole)
+            return new Color32(100, 100, 100, 255);
+
+        if (role is QuarantineSpecialistRole)
+            return new Color32(0, 200, 0, 255);
+
+        if (role is ContingencyPlannerRole)
+            return new Color32(0, 180, 255, 255);
+
+        return Color.black;
+    }
+
 
     private List<PlayerCard> CreateAllPlayerCards()
     {

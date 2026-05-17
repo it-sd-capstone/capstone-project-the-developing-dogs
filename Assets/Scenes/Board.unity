@@ -710,7 +710,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 452.11}
+  m_AnchoredPosition: {x: -0.00024414062, y: 452.11}
   m_SizeDelta: {x: -1161.466, y: -930.314}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &98403431
@@ -4026,7 +4026,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -22.062134, y: 17.109924}
+  m_AnchoredPosition: {x: -22.062256, y: 17.109863}
   m_SizeDelta: {x: -1547.34, y: -930.314}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &639210826
@@ -12667,7 +12667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: 0}
+  m_AnchoredPosition: {x: 0.00024414062, y: 0}
   m_SizeDelta: {x: -1645.4559, y: -869.7906}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1688767985
@@ -14886,6 +14886,8 @@ MonoBehaviour:
   gameOverScreen: {fileID: 2008909625}
   gameOverTitle: {fileID: 759768559}
   gameOverExplanation: {fileID: 624998972}
+  playerPawnPrefab: {fileID: 238645449570791170, guid: 70c5b40e9649f974c88a24ad133a6cfa, type: 3}
+  pawnContainer: {fileID: 1839179701}
   currentPlayerIndex: 0
   infectionRateIndex: 0
   actionCount: 0
