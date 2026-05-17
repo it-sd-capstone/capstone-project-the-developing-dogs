@@ -12,9 +12,9 @@ public abstract class Role
     public Color RoleColor { get; protected set; }
 
     // Default role rules. Child role classes can override these when needed.
-    public virtual int CardsRequiredForCure => 5;
-    public virtual bool CanGiveAnyCard => false;
-    public virtual bool CanBuildStationForFree => false;
+    public virtual int CardsRequiredForCure { get; set; } = 5;
+    public virtual bool CanGiveAnyCard { get; set; } = false; 
+    public virtual bool CanBuildStationForFree { get; set; } = false;
 
     // Gives the role a reference to the player that owns it.
     public void Initialize(Player owner)

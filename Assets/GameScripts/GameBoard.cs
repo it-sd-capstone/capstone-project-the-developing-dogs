@@ -41,7 +41,6 @@ public class GameBoard : MonoBehaviour
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
     private Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
-    
 
     private void Awake()
     {
@@ -156,12 +155,11 @@ public class GameBoard : MonoBehaviour
         outbreakChain.Add(city);
 
         outbreakCounter++;
-        // OnOutbreak?.Invoke();
         
         if(outbreakCounter >= maxOutbreaks)
         {
             Debug.Log("Too many outbreaks. You lose.");
-            //loss code here
+            gm.LoseGame("You suffered too many outbreaks");
             return;
         }
 
@@ -186,6 +184,7 @@ public class GameBoard : MonoBehaviour
         curePool[color] = true;
 
         UpdateCount();
+        CheckWin();
     }
 
     public bool canMove(City from, City to) => from.IsConnectedTo(to);
@@ -204,14 +203,10 @@ public class GameBoard : MonoBehaviour
         researchStationCount -= 1;
     }
 
-    public bool CheckWin()
+    public void CheckWin()
     { 
-        foreach(DiseaseColor color in Enum.GetValues(typeof(DiseaseColor)))
-        {
-            if(!curePool[color]) return false;
-        }
-
-        return true;
+        if (curePool[DiseaseColor.Red] && curePool[DiseaseColor.Blue] && curePool[DiseaseColor.Yellow] && curePool[DiseaseColor.Black])
+            gm.WinGame();
     }
 
     private void UpdateCount()

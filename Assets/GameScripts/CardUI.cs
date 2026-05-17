@@ -70,15 +70,24 @@ public class CardUI : MonoBehaviour
     }
 
     public void OnCardClicked()
+{
+    // If we're in discard mode, only discard, don't share
+    if (pa != null && pa.discarding)
     {
-        if (!isSelected) pa.CardShare(card);
-        isSelected = !isSelected;
-
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = isSelected ? selectedColor : normalColor;
-        }
-
-        Debug.Log("Clicked card: " + cardNameText.text);
+        pa.Discard(card);
+        return;
     }
+    
+    if (!isSelected) {
+        pa.CardShare(card);
+    }
+    isSelected = !isSelected;
+
+    if (backgroundImage != null)
+    {
+        backgroundImage.color = isSelected ? selectedColor : normalColor;
+    }
+
+    Debug.Log("Clicked card: " + cardNameText.text);
+}
 }

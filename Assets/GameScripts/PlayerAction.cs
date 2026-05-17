@@ -55,6 +55,7 @@ public class PlayerAction : MonoBehaviour
     private List<City> currentValidDestinations = new List<City>();
     private List<Player> shareable = new List<Player>();
     private int neededForCure;
+    private bool taking = false;
     
     // Callbacks for confirmation
     private Action<bool> currentConfirmationCallback;
@@ -67,6 +68,7 @@ public class PlayerAction : MonoBehaviour
     private bool shuttleFlight;
     private bool attemptShare;
     private PlayerCard cardToShare;
+    public bool discarding = false;
 
     public void Start()
     {
@@ -611,31 +613,56 @@ public class PlayerAction : MonoBehaviour
         ClearActionState();
     }
 
-    // TODO: IMPLEMENT SHARE
+    // share cards between players in city
     public void OnShareClick()
     {
         shareable.Clear();
         foreach (Player player in gm.players)
         {
-            if (currentP.CurrentCity == player.CurrentCity)
+            if (player.CurrentCity == currentP.CurrentCity && player != currentP)
             {
                 shareable.Add(player);
+                foreach (PlayerCard card in player.Hand)
+                {
+                    if(card.City == currentP.CurrentCity)
+                    {
+                        cardToShare = card;
+                        taking = true;
+                        break;
+                    }
+                }
+                if (player.RoleName == "Researcher")
+                {
+                    if (shareable.Count != 0)
+                    {
+                        ShowMessage("Select a card to take from the researcher.");
+                        attemptShare = true;
+                        taking = true;
+                        return;
+                    }
+                }
+                
             }
         }
-        if (currentP.Hand.Count() <= 0)
+        if (currentP.RoleName == "Researcher")
         {
-            ShowMessage("No cards to trade.");
+            ShowMessage("Select a card to give.");
+            attemptShare = true;
+            taking = false;
             return;
         }
-        if (shareable.Count <= 0)
+        
+        foreach (PlayerCard card in currentP.Hand)
         {
-            ShowMessage("Nobody to trade with in your city.");
-            return;
+            if (card.City == currentP.CurrentCity)
+            {
+                cardToShare = card;
+                taking = false;
+            }
         }
-
+        
         attemptShare = true;
-
-        ShowMessage("Click on one of your cards to give to another player.");
+        CardShare(cardToShare);
     }
 
     public void CardShare(PlayerCard card)
@@ -657,11 +684,34 @@ public class PlayerAction : MonoBehaviour
     public void ExecuteShare(Player player)
     {
         CardUIManager CUIM = FindAnyObjectByType<CardUIManager>();
-        CUIM.DiscardCard(cardToShare);
-        currentP.Hand.Remove(cardToShare);
-        player.Hand.Add(cardToShare);
+        if (!taking)
+        {
+            ShowMessage($"{cardToShare.City.cityName} card shared with {player.PlayerName}!");
+        } else
+        {
+            ShowMessage($"{cardToShare.City.cityName} taken from {player.PlayerName}");
+        }
+
+        if (!taking)
+        {
+            currentP.Hand.Remove(cardToShare);
+            
+            player.Hand.Add(cardToShare);
+        } else
+        {
+            player.Hand.Remove(cardToShare);
+
+            currentP.Hand.Add(cardToShare);
+        }
+        CUIM.ClearHand();
+        foreach (PlayerCard card in currentP.Hand)
+        {
+            CUIM.ShowPlayerCard(card);
+        }
+        
         playerSelectPanel.SetActive(false);
-        ShowMessage($"{cardToShare.City.cityName} card shared with {player.PlayerName}!");
+        
+        
         cardToShare = null;
         attemptShare = false;
         gm.actionCount--;
@@ -709,36 +759,40 @@ public class PlayerAction : MonoBehaviour
         {
             pendingCure = DiseaseColor.Red;
             ShowConfirmation($"Cure the red disease for {neededForCure} red cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(DiseaseColor.Red);
+                if (confirmed) board.CureDisease(pendingCure);
                 else ShowMessage("Cure Cancelled.");
                 });
+            board.CheckWin();
             return;
         }
         if(blue > neededForCure)
         {
             pendingCure = DiseaseColor.Blue;
             ShowConfirmation($"Cure the blue disease for {neededForCure} blue cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(DiseaseColor.Blue);
+                if (confirmed) board.CureDisease(pendingCure);
                 else ShowMessage("Cure Cancelled.");
                 });
+            board.CheckWin();
             return;
         }
         if(yellow > neededForCure)
         {
             pendingCure = DiseaseColor.Yellow;
             ShowConfirmation($"Cure the yellow disease for {neededForCure} yellow cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(DiseaseColor.Yellow);
+                if (confirmed) board.CureDisease(pendingCure);
                 else ShowMessage("Cure Cancelled.");
                 });
+            board.CheckWin();
             return;
         }
         if(black > neededForCure)
         {
             pendingCure = DiseaseColor.Black;
             ShowConfirmation($"Cure the black disease for {neededForCure} black cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(DiseaseColor.Black);
+                if (confirmed) board.CureDisease(pendingCure);
                 else ShowMessage("Cure Cancelled.");
                 });
+            board.CheckWin();
             return;
         }
     }
@@ -838,10 +892,41 @@ public class PlayerAction : MonoBehaviour
         ShowMessage($"Select an adjacent city to treat (Operations Expert ability).");
     }
 
-    public void PromptDiscard(List<PlayerCard> hand)
+    public void PromptDiscard()
     {
+        ShowMessage($"Too many cards ({currentP.Hand.Count}/7)! Select a card to discard.");
+        discarding = true;
+    }
+
+    public void Discard(PlayerCard card)
+    {
+    if (!discarding) return;  // Only process if we're in discard mode
+    
+    // Check if player actually has this card
+    if (!currentP.Hand.Contains(card))
+    {
+        ShowMessage("Cannot discard: You don't have this card!");
         return;
     }
+    
+    // Remove the card
+    currentP.Hand.Remove(card);
+    gm.DiscardPlayerCard(card);
+    
+    // Reset discard state
+    discarding = false;
+    
+    // Re-check if still over limit
+    if (currentP.Hand.Count > 7)
+    {
+        ShowMessage($"Still have {currentP.Hand.Count} cards. Discard another.");
+        discarding = true;
+        return;
+    }
+    
+    // Proceed to next phase
+    gm.DrawDone();
+}
 
     public void CloseNotice()
     {
