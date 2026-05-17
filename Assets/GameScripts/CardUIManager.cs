@@ -14,6 +14,15 @@ public class CardUIManager : MonoBehaviour
 
     private Dictionary<PlayerCard, GameObject> cardGameObjects = new Dictionary<PlayerCard, GameObject>();
 
+    public void ShowPlayerCards(Player player)
+    {
+        ClearHand();
+        foreach (PlayerCard card in player.Hand)
+        {
+            ShowPlayerCard(card);
+        }
+    }
+
     public void ShowPlayerCard(PlayerCard card)
     {
         GameObject cardObject = Instantiate(playerCardPrefab, currentHandArea);

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 // Role for the Researcher.
@@ -8,5 +9,6 @@ public class ResearcherRole : Role
     {
         RoleName = "Researcher";
         RoleColor = new Color(0.8f, 0.6f, 0.2f);
+        CanGiveAnyCard = true;
     }
 }
