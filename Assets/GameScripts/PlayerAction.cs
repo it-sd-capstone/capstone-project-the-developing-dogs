@@ -56,6 +56,8 @@ public class PlayerAction : MonoBehaviour
     private List<Player> shareable = new List<Player>();
     private int neededForCure;
     private bool taking = false;
+    public bool dispatching;
+    private Player dispatched;
     
     // Callbacks for confirmation
     private Action<bool> currentConfirmationCallback;
@@ -154,6 +156,7 @@ public class PlayerAction : MonoBehaviour
             ClearActionState();
             isAwaitingMove = false;
             pendingActionType = "";
+            drive.GetComponent<Image>().color = Color.white;
             return;
         }
         
@@ -164,6 +167,9 @@ public class PlayerAction : MonoBehaviour
             return;
         }
         
+        drive.GetComponent<Image>().color = Color.grey;
+        
+
         // Clear any existing action state
         ClearActionState();
 
@@ -196,18 +202,47 @@ public class PlayerAction : MonoBehaviour
     private void ExecuteDrive(City destination)
     {
         // Move the player
-        currentP.MoveTo(destination);
+        if (!dispatching)
+        {
+            currentP.MoveTo(destination);
+        } else
+        {
+            dispatched.MoveTo(destination);
+        }
+        
+
+        if(currentP.RoleName == "Medic" || dispatched.RoleName == "Medic")
+        {
+            if (board.curePool[DiseaseColor.Red])
+            {
+                ExecuteTreat(currentP.CurrentCity, DiseaseColor.Red);
+            }
+            if (board.curePool[DiseaseColor.Blue])
+            {
+                ExecuteTreat(currentP.CurrentCity, DiseaseColor.Blue);
+            }
+            if (board.curePool[DiseaseColor.Yellow])
+            {
+                ExecuteTreat(currentP.CurrentCity, DiseaseColor.Yellow);
+            }
+            if (board.curePool[DiseaseColor.Black])
+            {
+                ExecuteTreat(currentP.CurrentCity, DiseaseColor.Black);
+            }
+        }
         
         // Consume one action
         gm.actionCount--;
         gm.UpdateActionDisplay();
         
         // Update visuals
-        board.UpdatePlayerPosition(currentP);
+        if (!dispatching) board.UpdatePlayerPosition(currentP);
+        else board.UpdatePlayerPosition(dispatched);
         
         Debug.Log($"{currentP.PlayerName} drove from {currentP.CurrentCity?.cityName} to {destination.cityName}.");
         
-        ShowMessage($"Drove to {destination.cityName}! {gm.actionCount} actions remaining.");
+        if (!dispatching) ShowMessage($"Drove to {destination.cityName}! {gm.actionCount} actions remaining.");
+        else ShowMessage($"You sent {dispatched.PlayerName} to {destination.cityName}");
         
         // Clear action state
         ClearActionState();
@@ -235,8 +270,11 @@ public class PlayerAction : MonoBehaviour
             ClearActionState();
             isAwaitingMove = false;
             pendingActionType = "";
+            fly.GetComponent<Image>().color = Color.white;
             return;
         }
+
+        fly.GetComponent<Image>().color = Color.grey;
 
         ClearActionState();
         currentValidDestinations.Clear();
@@ -345,7 +383,8 @@ public class PlayerAction : MonoBehaviour
                     gm.DiscardPlayerCard(cardToDiscard);
                     
                     // Move the player
-                    currentP.MoveTo(destination);
+                    if (dispatching) dispatched.MoveTo(destination);
+                    else currentP.MoveTo(destination);
                     
                     // Consume action
                     gm.actionCount--;
@@ -353,7 +392,8 @@ public class PlayerAction : MonoBehaviour
                     board.UpdatePlayerPosition(currentP);
                     
                     Debug.Log($"{currentP.PlayerName} flew to {destination.cityName} discarding {cardToDiscard.City.cityName}. Actions: {gm.actionCount}");
-                    ShowMessage($"Flew to {destination.cityName}! {gm.actionCount} actions remaining.");
+                    if (!dispatching) ShowMessage($"Flew to {destination.cityName}! {gm.actionCount} actions remaining.");
+                    else ShowMessage($"Flew {dispatched.PlayerName} to {destination.cityName}!");
                     
                     ClearActionState();
                 }
@@ -621,11 +661,12 @@ public class PlayerAction : MonoBehaviour
         {
             if (player.CurrentCity == currentP.CurrentCity && player != currentP)
             {
-                shareable.Add(player);
+                
                 foreach (PlayerCard card in player.Hand)
                 {
                     if(card.City == currentP.CurrentCity)
                     {
+                        shareable.Add(player);
                         cardToShare = card;
                         taking = true;
                         break;
@@ -633,9 +674,12 @@ public class PlayerAction : MonoBehaviour
                 }
                 if (player.RoleName == "Researcher")
                 {
+                    shareable.Add(currentP);
                     if (shareable.Count != 0)
                     {
                         ShowMessage("Select a card to take from the researcher.");
+                        CardUIManager CUIM = FindAnyObjectByType<CardUIManager>();
+                        CUIM.ShowPlayerCards(player);
                         attemptShare = true;
                         taking = true;
                         return;
@@ -673,10 +717,13 @@ public class PlayerAction : MonoBehaviour
 
         foreach(Player player in shareable)
         {
-            GameObject button = Instantiate(pSelectButtonPrefab, playerSelectPanel.transform);
-            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
-            buttonText.text = player.PlayerName;
-            button.GetComponent<Button>().onClick.AddListener(() => ExecuteShare(player));
+            if (player.Hand.Count < 7)
+            {
+                GameObject button = Instantiate(pSelectButtonPrefab, playerSelectPanel.transform);
+                TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText.text = player.PlayerName;
+                button.GetComponent<Button>().onClick.AddListener(() => ExecuteShare(player));
+            }
         }
         playerSelectPanel.SetActive(true);
     }
@@ -722,11 +769,13 @@ public class PlayerAction : MonoBehaviour
     {
         shareable.Clear();
         attemptShare = false;
+        playerSelectPanel.SetActive(false);
     }
 
+    // cure disease
     public void OnCureClick()
     {
-        if (currentP.Role?.RoleName == "Scientist") neededForCure = 4;
+        if (currentP.RoleName == "Scientist") neededForCure = 4;
         else neededForCure = 5;
 
         if (currentP.Hand.Count < neededForCure)
@@ -755,43 +804,123 @@ public class PlayerAction : MonoBehaviour
                     break;    
             }
         }
-        if(red > neededForCure)
+        if(red >= neededForCure)
         {
             pendingCure = DiseaseColor.Red;
             ShowConfirmation($"Cure the red disease for {neededForCure} red cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(pendingCure);
+                if (confirmed)
+                {
+                    board.CureDisease(pendingCure);
+                    int i = 0;
+                    List<PlayerCard> ToDiscard = new List<PlayerCard>();
+                    foreach (PlayerCard card in currentP.Hand)
+                    {
+                        if(card.City.diseaseColor == pendingCure && i < neededForCure)
+                        {
+                            ToDiscard.Add(card);
+                            i++;
+                        }
+                    }
+                    foreach (PlayerCard card in ToDiscard)
+                    {
+                        currentP.DiscardCard(card);
+                    }
+                    ToDiscard.Clear();
+                    ShowMessage($"You cured the {pendingCure} disease!");
+                }
                 else ShowMessage("Cure Cancelled.");
                 });
+            
             board.CheckWin();
             return;
         }
-        if(blue > neededForCure)
+        if(blue >= neededForCure)
         {
             pendingCure = DiseaseColor.Blue;
             ShowConfirmation($"Cure the blue disease for {neededForCure} blue cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(pendingCure);
+                if (confirmed)
+                {
+                    board.CureDisease(pendingCure);
+                    int i = 0;
+                    List<PlayerCard> ToDiscard = new List<PlayerCard>();
+                    foreach (PlayerCard card in currentP.Hand)
+                    {
+                        if(card.City.diseaseColor == pendingCure && i < neededForCure)
+                        {
+                            ToDiscard.Add(card);
+                            i++;
+                        }
+                    }
+                    foreach (PlayerCard card in ToDiscard)
+                    {
+                        currentP.DiscardCard(card);
+                    }
+                    ToDiscard.Clear();
+                    ShowMessage($"You cured the {pendingCure} disease!");
+                }
                 else ShowMessage("Cure Cancelled.");
                 });
+
             board.CheckWin();
             return;
         }
-        if(yellow > neededForCure)
+        if(yellow >= neededForCure)
         {
             pendingCure = DiseaseColor.Yellow;
             ShowConfirmation($"Cure the yellow disease for {neededForCure} yellow cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(pendingCure);
+                if (confirmed)
+                {
+                    board.CureDisease(pendingCure);
+                    int i = 0;
+                    List<PlayerCard> ToDiscard = new List<PlayerCard>();
+                    foreach (PlayerCard card in currentP.Hand)
+                    {
+                        if(card.City.diseaseColor == pendingCure && i < neededForCure)
+                        {
+                            ToDiscard.Add(card);
+                            i++;
+                        }
+                    }
+                    foreach (PlayerCard card in ToDiscard)
+                    {
+                        currentP.DiscardCard(card);
+                    }
+                    ToDiscard.Clear();
+                    ShowMessage($"You cured the {pendingCure} disease!");
+                }
                 else ShowMessage("Cure Cancelled.");
                 });
+                
             board.CheckWin();
             return;
         }
-        if(black > neededForCure)
+        if(black >= neededForCure)
         {
             pendingCure = DiseaseColor.Black;
             ShowConfirmation($"Cure the black disease for {neededForCure} black cards?", (confirmed)=> {
-                if (confirmed) board.CureDisease(pendingCure);
+                if (confirmed)
+                {
+                    board.CureDisease(pendingCure);
+                    int i = 0;
+                    List<PlayerCard> ToDiscard = new List<PlayerCard>();
+                    foreach (PlayerCard card in currentP.Hand)
+                    {
+                        if(card.City.diseaseColor == pendingCure && i < neededForCure)
+                        {
+                            ToDiscard.Add(card);
+                            i++;
+                        }
+                    }
+                    foreach (PlayerCard card in ToDiscard)
+                    {
+                        currentP.DiscardCard(card);
+                    }
+                    ToDiscard.Clear();
+                    ShowMessage($"You cured the {pendingCure} disease!");
+                }
                 else ShowMessage("Cure Cancelled.");
                 });
+                
             board.CheckWin();
             return;
         }
@@ -895,6 +1024,8 @@ public class PlayerAction : MonoBehaviour
     public void PromptDiscard()
     {
         ShowMessage($"Too many cards ({currentP.Hand.Count}/7)! Select a card to discard.");
+        CardUIManager CUIM = FindAnyObjectByType<CardUIManager>();
+        CUIM.ShowPlayerCards(currentP);
         discarding = true;
     }
 

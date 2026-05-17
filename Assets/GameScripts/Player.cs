@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Represents a player in the game.
@@ -145,7 +146,7 @@ public class Player : MonoBehaviour
     // Uses the player's role ability.
     public void UseRoleAbility(GameBoard board)
     {
-        Role?.UseSpecialAbility(board);
+        if (RoleName == "Dispatcher") board.pa.dispatching = true;
     }
 
     public bool CanFly(Player p, City city)

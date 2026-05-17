@@ -750,6 +750,8 @@ MonoBehaviour:
   pSelectText: {fileID: 379620171}
   buttonRect: {fileID: 299271571}
   pSelectButtonPrefab: {fileID: 4660582415300759811, guid: 93ecc8f7125fcc54fab342de0f952417, type: 3}
+  dispatching: 0
+  discarding: 0
 --- !u!114 &98403432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9665,6 +9667,7 @@ MonoBehaviour:
   background: {fileID: 1693576679}
   boardContainer: {fileID: 1839179701}
   cityMarkerPrefab: {fileID: 8132256049192024984, guid: 471b229acea45ec459edd3b287cd3df6, type: 3}
+  pa: {fileID: 0}
 --- !u!1 &1407701662
 GameObject:
   m_ObjectHideFlags: 0
@@ -12097,7 +12100,7 @@ GameObject:
   - component: {fileID: 1654074721}
   - component: {fileID: 1654074720}
   m_Layer: 5
-  m_Name: Button
+  m_Name: CancelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

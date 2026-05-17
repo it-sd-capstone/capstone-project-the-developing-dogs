@@ -69,19 +69,18 @@ public class GameManager : MonoBehaviour
 
     void SetupGame()
     {
-        SetupPlayers();
-
         List<PlayerCard> allCards = CreateAllPlayerCards();
         cardUIManager = FindAnyObjectByType<CardUIManager>();
 
         playerDeck.Initialize(allCards);
 
+        infectionDeck.Initialize(board.cities);
+        SetupInitialInfections();
+
+        SetupPlayers();
         DealStartingCards();
 
         playerDeck.InsertEpidemicCards(GetEpidemicCount());
-
-        infectionDeck.Initialize(board.cities);
-        SetupInitialInfections();
 
         playerAction = FindAnyObjectByType<PlayerAction>();
         playerInfo = FindAnyObjectByType<PlayerInfo>();

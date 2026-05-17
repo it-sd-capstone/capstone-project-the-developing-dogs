@@ -34,10 +34,11 @@ public class GameBoard : MonoBehaviour
     [SerializeField] public RectTransform boardContainer;
     [SerializeField] private GameObject cityMarkerPrefab;
     private Image hasDisease;
+    City quarantineLoc;
 
     private CityCard cc;
     private GameManager gm;
-    private PlayerAction pa;
+    public PlayerAction pa;
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
     private Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
@@ -128,10 +129,25 @@ public class GameBoard : MonoBehaviour
     {
         if(IsEradicated(disease)) return;
 
+        foreach (Player player in gm.players)
+        {
+            if (player.RoleName == "Quarantine Specialist")
+                quarantineLoc = player.CurrentCity;
+        }
+
         if (cubePool[disease] <= 0)
         {
             Debug.Log("No more disease cubes. You lose.");
-            return; //TODO: put game end here instead of return.
+            gm.LoseGame("You let the disease run too rampant");
+            return; 
+        }
+
+        if(quarantineLoc != null)
+        {
+            if (city == quarantineLoc || quarantineLoc.neighbors.Contains(city))
+            {
+                return;
+            }
         }
 
         int currentCubes = city.GetDiseaseCount(disease);
