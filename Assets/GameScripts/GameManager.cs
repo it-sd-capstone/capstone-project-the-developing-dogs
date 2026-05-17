@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
 
             string selectedRoleName = GameSettings.SelectedRoles[i];
             player.RoleName = selectedRoleName;
+            player.SetRole(CreateRoleFromName(selectedRoleName));
 
             players.Add(player);
         }
@@ -74,8 +75,6 @@ public class GameManager : MonoBehaviour
 
     void SetupGame()
     {
-        SpawnPlayerPawns();
-
         List<PlayerCard> allCards = CreateAllPlayerCards();
         cardUIManager = FindAnyObjectByType<CardUIManager>();
 
@@ -85,6 +84,7 @@ public class GameManager : MonoBehaviour
         SetupInitialInfections();
 
         SetupPlayers();
+        SpawnPlayerPawns();
         DealStartingCards();
 
         playerDeck.InsertEpidemicCards(GetEpidemicCount());

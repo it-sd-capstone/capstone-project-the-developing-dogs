@@ -243,6 +243,8 @@ public class PlayerAction : MonoBehaviour
         
         if (!dispatching) ShowMessage($"Drove to {destination.cityName}! {gm.actionCount} actions remaining.");
         else ShowMessage($"You sent {dispatched.PlayerName} to {destination.cityName}");
+
+        drive.GetComponent<Image>().color = Color.white;
         
         // Clear action state
         ClearActionState();
@@ -326,6 +328,8 @@ public class PlayerAction : MonoBehaviour
     {
         // Find the card that matches either current city or destination
         PlayerCard cardToDiscard = null;
+
+        fly.GetComponent<Image>().color = Color.white;
 
         if (currentP.CurrentCity.hasResearchStation && destination.hasResearchStation)
             shuttleFlight = true;
