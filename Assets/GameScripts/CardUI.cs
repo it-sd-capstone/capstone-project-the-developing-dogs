@@ -13,6 +13,7 @@ public class CardUI : MonoBehaviour
 
     private Color normalColor;
     public Color selectedColor = Color.green;
+    private PlayerAction pa;
 
     private void Awake()
     {
@@ -20,6 +21,8 @@ public class CardUI : MonoBehaviour
         {
             normalColor = backgroundImage.color;
         }
+
+        pa = FindAnyObjectByType<PlayerAction>();
     }
 
     public void Setup(PlayerCard playerCard)
@@ -40,8 +43,8 @@ public class CardUI : MonoBehaviour
                     normalColor = Color.blue;
                     break;
                 case DiseaseColor.Yellow:
-                    backgroundImage.color = Color.yellow;
-                    normalColor = Color.yellow;
+                    backgroundImage.color = Color.yellowNice;
+                    normalColor = Color.yellowNice;
                     break;
                 default:
                     backgroundImage.color = Color.black;
@@ -67,14 +70,24 @@ public class CardUI : MonoBehaviour
     }
 
     public void OnCardClicked()
+{
+    // If we're in discard mode, only discard, don't share
+    if (pa != null && pa.discarding)
     {
-        isSelected = !isSelected;
-
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = isSelected ? selectedColor : normalColor;
-        }
-
-        Debug.Log("Clicked card: " + cardNameText.text);
+        pa.Discard(card);
+        return;
     }
+    
+    if (!isSelected) {
+        pa.CardShare(card);
+    }
+    isSelected = !isSelected;
+
+    if (backgroundImage != null)
+    {
+        backgroundImage.color = isSelected ? selectedColor : normalColor;
+    }
+
+    Debug.Log("Clicked card: " + cardNameText.text);
+}
 }

@@ -19,10 +19,10 @@ public class PlayerInfo : MonoBehaviour
 
         pName.text = player.PlayerName;
 
-        if (player.Role == null)
+        if (player.RoleName == null)
             pRole.text = "?";
         else
-            pRole.text = player.Role.RoleName;
+            pRole.text = player.RoleName;
 
         actions.text = "4";
     }
@@ -31,5 +31,4 @@ public class PlayerInfo : MonoBehaviour
     {
         actions.text = gm.actionCount.ToString();
     }
-    
 }

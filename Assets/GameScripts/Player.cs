@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Represents a player in the game.
@@ -9,6 +11,7 @@ public class Player : MonoBehaviour
     public string PlayerName { get; private set; }
     public City CurrentCity { get; private set; }
     public Role Role { get; private set; }
+    public String RoleName {get; set; }
     public GameBoard board;
 
     // Player hand information.
@@ -79,7 +82,7 @@ public class Player : MonoBehaviour
     public bool CanGiveCardTo(Player other, PlayerCard card)
     {
         // Players must be in the same city to share knowledge.
-        if (this.CurrentCity != other.CurrentCity)
+        if (CurrentCity != other.CurrentCity)
             return false;
 
         // Researcher can give any card.
@@ -87,7 +90,7 @@ public class Player : MonoBehaviour
             return true;
 
         // Default rule: only give the card that matches the city you are in.
-        return card.City == this.CurrentCity;
+        return card.City == CurrentCity;
     }
 
     // Gives a card to another player if the rules allow it.
@@ -143,7 +146,7 @@ public class Player : MonoBehaviour
     // Uses the player's role ability.
     public void UseRoleAbility(GameBoard board)
     {
-        Role?.UseSpecialAbility(board);
+        if (RoleName == "Dispatcher") board.pa.dispatching = true;
     }
 
     public bool CanFly(Player p, City city)

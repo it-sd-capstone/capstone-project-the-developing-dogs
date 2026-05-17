@@ -31,20 +31,19 @@ public class GameBoard : MonoBehaviour
 
     [Header("Board visuals")]
     [SerializeField] private Image background;
-    [SerializeField] private RectTransform boardContainer;
+    [SerializeField] public RectTransform boardContainer;
     [SerializeField] private GameObject cityMarkerPrefab;
     private Image hasDisease;
+    City quarantineLoc;
 
     private CityCard cc;
     private GameManager gm;
-    private PlayerAction pa;
+    public PlayerAction pa;
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
+
     public Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
     private Dictionary<City, Player[]> citySlots = new Dictionary<City, Player[]>();
-
-
-
 
     private void Awake()
     {
@@ -132,10 +131,25 @@ public class GameBoard : MonoBehaviour
     {
         if(IsEradicated(disease)) return;
 
+        foreach (Player player in gm.players)
+        {
+            if (player.RoleName == "Quarantine Specialist")
+                quarantineLoc = player.CurrentCity;
+        }
+
         if (cubePool[disease] <= 0)
         {
             Debug.Log("No more disease cubes. You lose.");
-            return; //TODO: put game end here instead of return.
+            gm.LoseGame("You let the disease run too rampant");
+            return; 
+        }
+
+        if(quarantineLoc != null)
+        {
+            if (city == quarantineLoc || quarantineLoc.neighbors.Contains(city))
+            {
+                return;
+            }
         }
 
         int currentCubes = city.GetDiseaseCount(disease);
@@ -159,12 +173,11 @@ public class GameBoard : MonoBehaviour
         outbreakChain.Add(city);
 
         outbreakCounter++;
-        // OnOutbreak?.Invoke();
         
         if(outbreakCounter >= maxOutbreaks)
         {
             Debug.Log("Too many outbreaks. You lose.");
-            //loss code here
+            gm.LoseGame("You suffered too many outbreaks");
             return;
         }
 
@@ -189,6 +202,7 @@ public class GameBoard : MonoBehaviour
         curePool[color] = true;
 
         UpdateCount();
+        CheckWin();
     }
 
     public bool canMove(City from, City to) => from.IsConnectedTo(to);
@@ -207,14 +221,10 @@ public class GameBoard : MonoBehaviour
         researchStationCount -= 1;
     }
 
-    public bool CheckWin()
+    public void CheckWin()
     { 
-        foreach(DiseaseColor color in Enum.GetValues(typeof(DiseaseColor)))
-        {
-            if(!curePool[color]) return false;
-        }
-
-        return true;
+        if (curePool[DiseaseColor.Red] && curePool[DiseaseColor.Blue] && curePool[DiseaseColor.Yellow] && curePool[DiseaseColor.Black])
+            gm.WinGame();
     }
 
     private void UpdateCount()

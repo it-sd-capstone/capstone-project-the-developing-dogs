@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI actionText;
     [SerializeField] private TextMeshProUGUI messageText;
+    [SerializeField] private GameObject gameOverScreen;
+    [SerializeField] private TextMeshProUGUI gameOverTitle;
+    [SerializeField] private TextMeshProUGUI gameOverExplanation;
 
     [Header("Player Pawn Settings")]
     public GameObject playerPawnPrefab;
@@ -43,6 +46,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Player Count: " + GameSettings.PlayerCount);
         Debug.Log("Difficulty: " + GameSettings.Difficulty);
 
+        gameOverScreen.SetActive(false);
         ApplyDifficultyFromSettings();
         SetupGame();
         StartTurn();
@@ -63,8 +67,8 @@ public class GameManager : MonoBehaviour
             player.SetPlayerName("Player " + (i + 1));
 
             string selectedRoleName = GameSettings.SelectedRoles[i];
-            Role selectedRole = CreateRoleFromName(selectedRoleName);
-            player.SetRole(selectedRole);
+            player.RoleName = selectedRoleName;
+            player.SetRole(CreateRoleFromName(selectedRoleName));
 
             players.Add(player);
         }
@@ -72,20 +76,19 @@ public class GameManager : MonoBehaviour
 
     void SetupGame()
     {
-        SetupPlayers();
-        SpawnPlayerPawns();
-
         List<PlayerCard> allCards = CreateAllPlayerCards();
         cardUIManager = FindAnyObjectByType<CardUIManager>();
 
         playerDeck.Initialize(allCards);
 
+        infectionDeck.Initialize(board.cities);
+        SetupInitialInfections();
+
+        SetupPlayers();
+        SpawnPlayerPawns();
         DealStartingCards();
 
         playerDeck.InsertEpidemicCards(GetEpidemicCount());
-
-        infectionDeck.Initialize(board.cities);
-        SetupInitialInfections();
 
         playerAction = FindAnyObjectByType<PlayerAction>();
         playerInfo = FindAnyObjectByType<PlayerInfo>();
@@ -285,14 +288,12 @@ public class GameManager : MonoBehaviour
         }
 
         DrawPlayerCardsForCurrentPlayer();
-        RunInfectionPhase();
-
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
-        StartTurn();
     }
 
     void DrawPlayerCardsForCurrentPlayer()
     {
+        if(playerDeck.Count <= 0)
+            LoseGame("You ran out of cards to draw");
         Player currentPlayer = players[currentPlayerIndex];
 
         for (int i = 0; i < 2; i++)
@@ -312,14 +313,24 @@ public class GameManager : MonoBehaviour
         CheckOverSeven(currentPlayer);
     }
 
-    void CheckOverSeven(Player player)
+    public void CheckOverSeven(Player player)
     {
-        if (player.Hand.Count <= 7) return;
-
-        while(player.Hand.Count > 7)
+        if (player.Hand.Count <= 7)
         {
-            playerAction.PromptDiscard(player.Hand);
+        DrawDone();
         }
+        else 
+        {
+        playerAction.PromptDiscard();
+        }
+    }
+
+
+    public void DrawDone()
+    {
+        RunInfectionPhase();
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
+        StartTurn();
     }
 
     void RunInfectionPhase()
@@ -389,13 +400,19 @@ public class GameManager : MonoBehaviour
             WinGame();
     }
 
-    private void WinGame()
+    public void WinGame()
     {
         Debug.Log("You win! All cures found.");
+        gameOverTitle.text = "Your Team Has Won!";
+        gameOverExplanation.text = "Your team managed to get all the cures before they took over the world. Thank you, saviors of earth!";
+        gameOverScreen.SetActive(true);
     }
 
-    private void LoseGame(string reason)
+    public void LoseGame(string reason)
     {
+        gameOverTitle.text = "Your Team Lost!";
+        gameOverExplanation.text = $"Your team couldn't make all the cures in time. {reason}.";
+        gameOverScreen.SetActive(true);
         Debug.Log("You lose: " + reason);
     }
 
