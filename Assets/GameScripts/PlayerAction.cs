@@ -791,6 +791,7 @@ public class PlayerAction : MonoBehaviour
         int blue = 0;
         int yellow = 0;
         int black = 0;
+        CardUIManager CUIM = FindAnyObjectByType<CardUIManager>();
         foreach (PlayerCard card in currentP.Hand)
         {
             switch(card.City.diseaseColor){
@@ -834,7 +835,7 @@ public class PlayerAction : MonoBehaviour
                 }
                 else ShowMessage("Cure Cancelled.");
                 });
-            
+            CUIM.ShowPlayerCards(currentP);
             board.CheckWin();
             return;
         }
@@ -864,7 +865,7 @@ public class PlayerAction : MonoBehaviour
                 }
                 else ShowMessage("Cure Cancelled.");
                 });
-
+            CUIM.ShowPlayerCards(currentP);
             board.CheckWin();
             return;
         }
@@ -889,12 +890,13 @@ public class PlayerAction : MonoBehaviour
                     {
                         currentP.DiscardCard(card);
                     }
+                    
                     ToDiscard.Clear();
                     ShowMessage($"You cured the {pendingCure} disease!");
                 }
                 else ShowMessage("Cure Cancelled.");
                 });
-                
+            CUIM.ShowPlayerCards(currentP);
             board.CheckWin();
             return;
         }
@@ -924,7 +926,7 @@ public class PlayerAction : MonoBehaviour
                 }
                 else ShowMessage("Cure Cancelled.");
                 });
-                
+            CUIM.ShowPlayerCards(currentP);
             board.CheckWin();
             return;
         }

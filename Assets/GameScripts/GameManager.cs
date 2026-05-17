@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Color GetPawnColor(Role role)
+    public Color GetPawnColor(Role role)
     {
         if (role is MedicRole)
             return new Color32(255, 140, 0, 255);
