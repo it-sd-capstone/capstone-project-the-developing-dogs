@@ -219,12 +219,14 @@ public class GameBoard : MonoBehaviour
 
     private void UpdateCount()
     {
-        if (blueText != null)
+        if (gm != null && gm.infectionPoolUI != null)
         {
-            blueText.text = cubePool[DiseaseColor.Blue].ToString();
-            yellowText.text = cubePool[DiseaseColor.Yellow].ToString();
-            blackText.text = cubePool[DiseaseColor.Black].ToString();
-            redText.text = cubePool[DiseaseColor.Red].ToString();
+            gm.infectionPoolUI.UpdateInfectionCounts(
+                cubePool[DiseaseColor.Blue],
+                cubePool[DiseaseColor.Yellow],
+                cubePool[DiseaseColor.Black],
+                cubePool[DiseaseColor.Red]
+            );
         }
     }
 
