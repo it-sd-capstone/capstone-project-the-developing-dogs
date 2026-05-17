@@ -10075,10 +10075,6 @@ MonoBehaviour:
   outbreakCounter: 0
   maxOutbreaks: 8
   researchStationCount: 6
-  blueText: {fileID: 603281557}
-  yellowText: {fileID: 857732147}
-  blackText: {fileID: 1448766241}
-  redText: {fileID: 2066355187}
   citiesDB: {fileID: 11400000, guid: 9dd630ad6f8215e41a33bc3e798f2634, type: 2}
   background: {fileID: 1693576679}
   boardContainer: {fileID: 1839179701}
@@ -15447,7 +15443,7 @@ MonoBehaviour:
   playerInfo: {fileID: 0}
   difficulty: 1
   gameInfoUI: {fileID: 1203710987}
-  infectionPoolUI: {fileID: 0}
+  infectionPoolUI: {fileID: 233632281}
   actionText: {fileID: 0}
   messageText: {fileID: 0}
   gameOverScreen: {fileID: 2008909625}
