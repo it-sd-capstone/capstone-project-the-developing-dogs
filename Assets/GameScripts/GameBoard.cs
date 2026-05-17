@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,11 @@ public class GameBoard : MonoBehaviour
     private PlayerAction pa;
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
-    private Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
-    
+    public Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
+    private Dictionary<City, Player[]> citySlots = new Dictionary<City, Player[]>();
+
+
+
 
     private void Awake()
     {
@@ -276,19 +279,81 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    // Update player position visual
+    //Update player position visual
     public void UpdatePlayerPosition(Player player)
     {
-        // If you have visual markers for players, update their positions here
-        if (playerMarkers.TryGetValue(player, out GameObject marker))
+        if (!playerMarkers.TryGetValue(player, out GameObject marker))
+            return;
+
+        if (!cityMarkers.TryGetValue(player.CurrentCity, out GameObject cityMarker))
+            return;
+
+        //Ensure this city has a slot array
+        if (!citySlots.ContainsKey(player.CurrentCity))
+            citySlots[player.CurrentCity] = new Player[4];
+
+        Player[] slots = citySlots[player.CurrentCity];
+
+        //Remove player from ALL city slot arrays (in case they moved)
+        foreach (var kvp in citySlots)
         {
-            // Move the marker to the new city's position
-            if (cityMarkers.TryGetValue(player.CurrentCity, out GameObject cityMarker))
+            for (int i = 0; i < 4; i++)
             {
-                marker.transform.position = cityMarker.transform.position;
+                if (kvp.Value[i] == player)
+                    kvp.Value[i] = null;
             }
         }
+
+        //Assign a slot for this player (first free)
+        int assignedSlot = -1;
+        for (int i = 0; i < 4; i++)
+        {
+            if (slots[i] == null)
+            {
+                slots[i] = player;
+                assignedSlot = i;
+                break;
+            }
+        }
+
+        if (assignedSlot == -1)
+            assignedSlot = 0;
+
+        //Diamond offsets
+        Vector3[] offsets = new Vector3[]
+        {
+        new Vector3(0, -15, 0),   //slot 0 = front/bottom
+        new Vector3(-15, 0, 0),   //slot 1 = left
+        new Vector3(15, 0, 0),    //slot 2 = right
+        new Vector3(0, 15, 0),    //slot 3 = back/top
+        };
+
+        //Position pawn
+        Vector3 basePos = cityMarker.transform.position;
+        marker.transform.position = basePos + offsets[assignedSlot];
+
+        //Layering for pawns in city
+        int cityIndex = cityMarker.transform.GetSiblingIndex();
+        int baseIndex = cityIndex + 1;
+
+        //Ordering of pawns
+        int[] order = new int[] { 3, 2, 1, 0 };
+
+        int currentOffset = 0;
+        foreach (int slot in order)
+        {
+            Player p = slots[slot];
+            if (p == null) continue;
+
+            if (!playerMarkers.TryGetValue(p, out GameObject pawnGO))
+                continue;
+
+            //Pawn parented correctly
+            pawnGO.transform.SetSiblingIndex(baseIndex + currentOffset);
+            currentOffset++;
+        }
     }
+
 
     // Update research station visual
     public void UpdateResearchStationVisual(City city)
