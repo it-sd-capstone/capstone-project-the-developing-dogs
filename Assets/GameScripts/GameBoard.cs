@@ -195,6 +195,8 @@ public class GameBoard : MonoBehaviour
     {
         if(curePool[color]) return;
         curePool[color] = true;
+        InfectionPoolUI pool = FindAnyObjectByType<InfectionPoolUI>();
+        pool.SetCureStatus(color, true);
 
         UpdateCount();
         CheckWin();
@@ -360,7 +362,6 @@ public class GameBoard : MonoBehaviour
             currentOffset++;
         }
     }
-
 
     // Update research station visual
     public void UpdateResearchStationVisual(City city)
