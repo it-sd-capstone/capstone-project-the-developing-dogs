@@ -161,6 +161,7 @@ public class PlayerAction : MonoBehaviour
             return;
         }
         
+        if(discarding) return;
         // Check if player has actions remaining
         if (gm.actionCount <= 0)
         {
@@ -277,6 +278,8 @@ public class PlayerAction : MonoBehaviour
             return;
         }
 
+        if(discarding) return;
+
         fly.GetComponent<Image>().color = Color.grey;
 
         ClearActionState();
@@ -385,7 +388,6 @@ public class PlayerAction : MonoBehaviour
                 {
                     // Discard the card
                     currentP.DiscardCard(cardToDiscard);
-                    gm.DiscardPlayerCard(cardToDiscard);
                     
                     // Move the player
                     if (dispatching) dispatched.MoveTo(destination);
@@ -487,6 +489,8 @@ public class PlayerAction : MonoBehaviour
             return;
         }
         
+        if(discarding) return;
+
         ClearActionState();
         pendingActionType = "Build";
         isAwaitingMove = true;
@@ -513,6 +517,8 @@ public class PlayerAction : MonoBehaviour
             return;
         }
         
+        if(discarding) return;
+
         // Check if current city has any disease cubes
         bool hasDisease = false;
         foreach (DiseaseColor color in Enum.GetValues(typeof(DiseaseColor)))
@@ -661,12 +667,13 @@ public class PlayerAction : MonoBehaviour
     // share cards between players in city
     public void OnShareClick()
     {
+        if(discarding) return;
+
         shareable.Clear();
         foreach (Player player in gm.players)
         {
             if (player.CurrentCity == currentP.CurrentCity && player != currentP)
             {
-                
                 foreach (PlayerCard card in player.Hand)
                 {
                     if(card.City == currentP.CurrentCity)
@@ -679,7 +686,8 @@ public class PlayerAction : MonoBehaviour
                 }
                 if (player.RoleName == "Researcher")
                 {
-                    shareable.Add(currentP);
+                    if(shareable.Count <= 0)
+                        shareable.Add(player);
                     if (shareable.Count != 0)
                     {
                         ShowMessage("Select a card to take from the researcher.");
@@ -695,6 +703,11 @@ public class PlayerAction : MonoBehaviour
         }
         if (currentP.RoleName == "Researcher")
         {
+            foreach(Player p in gm.players)
+            {
+                if(p.CurrentCity == currentP.CurrentCity && p != currentP)
+                    shareable.Add(p);
+            }
             ShowMessage("Select a card to give.");
             attemptShare = true;
             taking = false;
@@ -724,7 +737,7 @@ public class PlayerAction : MonoBehaviour
         {
             if (player.Hand.Count < 7)
             {
-                GameObject button = Instantiate(pSelectButtonPrefab, playerSelectPanel.transform);
+                GameObject button = Instantiate(pSelectButtonPrefab, buttonRect.transform);
                 TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
                 buttonText.text = player.PlayerName;
                 button.GetComponent<Button>().onClick.AddListener(() => ExecuteShare(player));
@@ -780,6 +793,7 @@ public class PlayerAction : MonoBehaviour
     // cure disease
     public void OnCureClick()
     {
+        if(discarding) return;
         if (currentP.RoleName == "Scientist") neededForCure = 4;
         else neededForCure = 5;
 
