@@ -64,6 +64,11 @@ public class PlayerAction : MonoBehaviour
     //Cure
     private DiseaseColor pendingCure;
 
+    //Dispatcher
+    private bool dispatcherMode = false;
+    private Player dispatcherPlayer = null;
+    private Player selectedPawn = null;
+
     private void Start()
     {
         ynPanel.SetActive(false);
@@ -122,6 +127,12 @@ public class PlayerAction : MonoBehaviour
     //City click
     public void OnCitySelected(City city)
     {
+        if (dispatcherMode && pendingActionType == "DispatcherMove")
+        {
+            ExecuteDispatcherMove(city);
+            return;
+        }
+
         if (!isAwaitingMove)
             return;
 
@@ -546,6 +557,89 @@ public class PlayerAction : MonoBehaviour
 
         attemptShare = false;
         cardToShare = null;
+    }
+
+    //Dispatcher
+    public void StartDispatcherMode(Player dispatcher)
+    {
+        dispatcherMode = true;
+        dispatcherPlayer = dispatcher;
+
+        ShowNotice("Dispatcher ability activated. Select a pawn to move.");
+        OpenPawnSelection();
+    }
+
+    private void OpenPawnSelection()
+    {
+        playerSelectPanel.SetActive(true);
+
+        foreach (Transform child in playerSelectPanel.transform)
+            Destroy(child.gameObject);
+
+        foreach (Player p in gm.players)
+        {
+            GameObject btn = Instantiate(pSelectButtonPrefab, playerSelectPanel.transform);
+            btn.GetComponentInChildren<TextMeshProUGUI>().text = p.PlayerName;
+
+            btn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                selectedPawn = p;
+                playerSelectPanel.SetActive(false);
+                HighlightDispatcherMoves();
+            });
+        }
+    }
+
+    private void HighlightDispatcherMoves()
+    {
+        ShowNotice($"Select a destination for {selectedPawn.PlayerName}.");
+
+        currentValidDestinations.Clear();
+
+        // Drive connections
+        foreach (City c in selectedPawn.CurrentCity.neighbors)
+            currentValidDestinations.Add(c);
+
+        // Shuttle flights
+        foreach (City c in board.cities)
+            if (c.hasResearchStation && c != selectedPawn.CurrentCity)
+                currentValidDestinations.Add(c);
+
+        // Direct/charter flights
+        foreach (PlayerCard card in selectedPawn.Hand)
+        {
+            if (card.City == selectedPawn.CurrentCity)
+            {
+                currentValidDestinations = board.cities.ToList();
+                break;
+            }
+
+            if (!currentValidDestinations.Contains(card.City))
+                currentValidDestinations.Add(card.City);
+        }
+
+        foreach (City c in currentValidDestinations)
+            board.Highlight(c);
+
+        isAwaitingMove = true;
+        pendingActionType = "DispatcherMove";
+    }
+
+    private void ExecuteDispatcherMove(City destination)
+    {
+        selectedPawn.MoveTo(destination);
+        board.UpdatePlayerPosition(selectedPawn);
+
+        gm.actionCount--;
+        gm.UpdateActionDisplay();
+
+        ShowNotice($"Dispatcher moved {selectedPawn.PlayerName} to {destination.cityName}.");
+
+        dispatcherMode = false;
+        selectedPawn = null;
+        dispatcherPlayer = null;
+
+        ClearActionState();
     }
 
     //Cure

@@ -10,6 +10,9 @@ public class DispatcherRole : Role
 
     public override void UseSpecialAbility(GameBoard board)
     {
-        //Compile errors so add this to fix
+        if (board == null || board.pa == null)
+            return;
+
+        board.pa.StartDispatcherMode(player);
     }
 }
