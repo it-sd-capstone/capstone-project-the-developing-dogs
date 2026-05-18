@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Color GetPawnColor(Role role)
+    public Color GetPawnColor(Role role)
     {
         if (role is MedicRole)
             return new Color32(255, 140, 0, 255);
@@ -281,6 +281,9 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if(playerAction.discarding) return;
+        playerAction.ending = true;
+
         // Clear any pending actions
         if (playerAction != null)
         {
@@ -328,6 +331,7 @@ public class GameManager : MonoBehaviour
 
     public void DrawDone()
     {
+        playerAction.ending = false;
         RunInfectionPhase();
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
         StartTurn();
@@ -353,6 +357,7 @@ public class GameManager : MonoBehaviour
     {
         if (card != null)
         {
+            playerAction.discarding = true;
             playerDeck.Discard(card);
             cardUIManager.DiscardCard(card);
         }
