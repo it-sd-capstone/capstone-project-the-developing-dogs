@@ -20,12 +20,6 @@ public class GameBoard : MonoBehaviour
     public int maxOutbreaks = 8;
     public int researchStationCount = 6;
 
-    //For Infection Pool UI
-    public TextMeshProUGUI blueText;
-    public TextMeshProUGUI yellowText;
-    public TextMeshProUGUI blackText;
-    public TextMeshProUGUI redText;
-
     [Header("City database")]
     [SerializeField] public CityDB citiesDB;
 
@@ -163,6 +157,7 @@ public class GameBoard : MonoBehaviour
             cubePool[disease]--;
         }
         cc.UpdateCC(city);
+        UpdateCount();
     }
 
     private void TriggerOutbreak(City city, DiseaseColor groundZeroColor, HashSet<City> outbreakChain)
@@ -229,12 +224,14 @@ public class GameBoard : MonoBehaviour
 
     private void UpdateCount()
     {
-        if (blueText != null)
+        if (gm != null && gm.infectionPoolUI != null)
         {
-            blueText.text = cubePool[DiseaseColor.Blue].ToString();
-            yellowText.text = cubePool[DiseaseColor.Yellow].ToString();
-            blackText.text = cubePool[DiseaseColor.Black].ToString();
-            redText.text = cubePool[DiseaseColor.Red].ToString();
+            gm.infectionPoolUI.UpdateInfectionCounts(
+                cubePool[DiseaseColor.Blue],
+                cubePool[DiseaseColor.Yellow],
+                cubePool[DiseaseColor.Black],
+                cubePool[DiseaseColor.Red]
+            );
         }
     }
 

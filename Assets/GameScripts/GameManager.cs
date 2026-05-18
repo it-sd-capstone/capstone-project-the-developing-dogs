@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     public GameInfoUI gameInfoUI;
+    public InfectionPoolUI infectionPoolUI;
 
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI actionText;
@@ -388,9 +389,13 @@ public class GameManager : MonoBehaviour
 
     //Win/lose
 
-    public void CureFound()
+    public void CureFound(DiseaseColor color)
     {
         curesFound++;
+
+        if (infectionPoolUI != null)
+            infectionPoolUI.SetCureStatus(color, true);
+
         if (curesFound >= 4)
             WinGame();
     }
