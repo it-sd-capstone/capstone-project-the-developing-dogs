@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerDeck : MonoBehaviour
@@ -14,85 +14,94 @@ public class PlayerDeck : MonoBehaviour
         drawPile.Clear();
         discardPile.Clear();
 
-        //Shuffle the initial deck
+        // Shuffle the initial deck
         Shuffle(allCards);
 
-        //Load into stack
+        // Load into stack (top of stack = end of list)
         foreach (var card in allCards)
             drawPile.Push(card);
     }
-
-    //Drawing card
 
     public PlayerCard DrawPlayerCard()
     {
         if (drawPile.Count == 0)
             ReshuffleDiscardIntoDraw();
 
+        if (drawPile.Count == 0)
+            return null;
+
         PlayerCard card = drawPile.Pop();
         discardPile.Add(card);
         return card;
     }
 
-    //Epidemic cards inserted
-
     public void InsertEpidemicCards(int epidemicCount)
     {
-        //Convert draw pile to list
+        if (epidemicCount <= 0)
+            return;
+
+        // Convert draw pile to list (top of stack should be end of list)
         List<PlayerCard> cards = new List<PlayerCard>(drawPile);
         drawPile.Clear();
 
-        //Create epidemic cards
+        // Create epidemic cards
         List<PlayerCard> epidemics = new List<PlayerCard>();
         for (int i = 0; i < epidemicCount; i++)
             epidemics.Add(new EpidemicCard());
 
-        //Split deck into equal piles
+        // Prepare piles
         List<List<PlayerCard>> piles = new List<List<PlayerCard>>();
-        int pileSize = cards.Count / epidemicCount;
-
-        int index = 0;
         for (int i = 0; i < epidemicCount; i++)
+            piles.Add(new List<PlayerCard>());
+
+        // Distribute cards as evenly as possible (round‑robin)
+        int pileIndex = 0;
+        foreach (var card in cards)
         {
-            List<PlayerCard> pile = new List<PlayerCard>();
-
-            //Fill pile
-            for (int j = 0; j < pileSize && index < cards.Count; j++)
-            {
-                pile.Add(cards[index]);
-                index++;
-            }
-
-            //Add one epidemic to each pile
-            pile.Add(epidemics[i]);
-
-            //Shuffle pile
-            Shuffle(pile);
-
-            piles.Add(pile);
+            piles[pileIndex].Add(card);
+            pileIndex = (pileIndex + 1) % epidemicCount;
         }
 
-        //Combine piles back into draw pile (stack)
-        for (int i = piles.Count - 1; i >= 0; i--)
+        // Add one epidemic to each pile and shuffle each pile
+        for (int i = 0; i < epidemicCount; i++)
+        {
+            piles[i].Add(epidemics[i]);
+            Shuffle(piles[i]);
+        }
+
+        // Optional: shuffle pile order to randomize stack order further
+        Shuffle(piles);
+
+        // Rebuild draw pile: last pile added ends up on top
+        for (int i = 0; i < piles.Count; i++)
         {
             foreach (var card in piles[i])
                 drawPile.Push(card);
         }
     }
 
-    //Discard and reshuffle
-
     private void ReshuffleDiscardIntoDraw()
     {
+        if (discardPile.Count == 0)
+            return;
+
         Shuffle(discardPile);
         foreach (var card in discardPile)
             drawPile.Push(card);
         discardPile.Clear();
     }
 
-    //Shuffle
-
     private void Shuffle(List<PlayerCard> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int rand = Random.Range(i, list.Count);
+            (list[i], list[rand]) = (list[rand], list[i]);
+        }
+    }
+
+    // Overload to shuffle list of lists (for piles)
+    private void Shuffle<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
