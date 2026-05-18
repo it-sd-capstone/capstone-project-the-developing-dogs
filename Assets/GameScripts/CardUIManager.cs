@@ -50,7 +50,7 @@ public class CardUIManager : MonoBehaviour
         while (currentHandArea.childCount > 0)
         {
             Transform child = currentHandArea.GetChild(0);
-            child.SetParent(null); // Detach first
+            child.SetParent(null);
             Destroy(child.gameObject);
         }
     }

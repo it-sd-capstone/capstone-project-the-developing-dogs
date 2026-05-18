@@ -12,8 +12,12 @@ public class GameInfoUI : MonoBehaviour
     public void UpdateGameInfo(Player currentPlayer, PlayerDeck playerDeck, InfectionDeck infectionDeck)
     {
         currentPlayerText.text = "Current Player: " + currentPlayer.PlayerName;
-        //roleText.text = "Role: " + currentPlayer.RoleName;
-        roleText.text = "Role: N/A";
+
+        string roleName = currentPlayer.Role != null
+            ? currentPlayer.Role.RoleName
+            : (string.IsNullOrEmpty(currentPlayer.RoleName) ? "None" : currentPlayer.RoleName);
+
+        roleText.text = "Role: " + roleName;
 
         playerDeckCountText.text = "Player Deck Cards Remaining: " + playerDeck.Count;
         infectionDeckCountText.text = "Infection Deck Cards Remaining: " + infectionDeck.Count;

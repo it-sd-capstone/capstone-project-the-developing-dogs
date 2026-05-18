@@ -100,15 +100,12 @@ public class GameManager : MonoBehaviour
         {
             GameObject pawn = Instantiate(playerPawnPrefab, pawnContainer);
 
-            //Set pawn color based on role
             Image img = pawn.GetComponent<Image>();
             if (img != null)
                 img.color = GetPawnColor(p.Role);
 
-            //Register pawn with GameBoard
             board.playerMarkers[p] = pawn;
 
-            //Move pawn to starting city
             board.UpdatePlayerPosition(p);
         }
     }
@@ -139,12 +136,10 @@ public class GameManager : MonoBehaviour
         return Color.black;
     }
 
-
     private List<PlayerCard> CreateAllPlayerCards()
     {
         List<PlayerCard> cards = new List<PlayerCard>();
 
-        //Create one card per city using CityDB
         foreach (CityData data in board.citiesDB.cities)
         {
             City city = board.cityLookup[data.cityName];
@@ -181,29 +176,14 @@ public class GameManager : MonoBehaviour
     {
         switch (roleName)
         {
-            case "Medic":
-                return new MedicRole();
-
-            case "Scientist":
-                return new ScientistRole();
-
-            case "Dispatcher":
-                return new DispatcherRole();
-
-            case "Researcher":
-                return new ResearcherRole();
-
-            case "Quarantine Specialist":
-                return new QuarantineSpecialistRole();
-
-            case "Contingency Planner":
-                return new ContingencyPlannerRole();
-
-            case "Operations Expert":
-                return new OperationsExpertRole();
-
-            default:
-                return null;
+            case "Medic": return new MedicRole();
+            case "Scientist": return new ScientistRole();
+            case "Dispatcher": return new DispatcherRole();
+            case "Researcher": return new ResearcherRole();
+            case "Quarantine Specialist": return new QuarantineSpecialistRole();
+            case "Contingency Planner": return new ContingencyPlannerRole();
+            case "Operations Expert": return new OperationsExpertRole();
+            default: return null;
         }
     }
 
@@ -230,8 +210,6 @@ public class GameManager : MonoBehaviour
             InfectFromDeck(1);
     }
 
-    //Turn system
-
     void StartTurn()
     {
         if (players == null || players.Count == 0)
@@ -249,7 +227,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Starting turn for: " + current.PlayerName);
 
-        if(cardUIManager != null)
+        if (cardUIManager != null)
         {
             cardUIManager.ClearHand();
             foreach (PlayerCard card in current.Hand)
@@ -281,7 +259,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Clear any pending actions
         if (playerAction != null)
         {
             playerAction.ClearActionState();
@@ -292,8 +269,9 @@ public class GameManager : MonoBehaviour
 
     void DrawPlayerCardsForCurrentPlayer()
     {
-        if(playerDeck.Count <= 0)
+        if (playerDeck.Count <= 0)
             LoseGame("You ran out of cards to draw");
+
         Player currentPlayer = players[currentPlayerIndex];
 
         for (int i = 0; i < 2; i++)
@@ -317,14 +295,13 @@ public class GameManager : MonoBehaviour
     {
         if (player.Hand.Count <= 7)
         {
-        DrawDone();
+            DrawDone();
         }
-        else 
+        else
         {
-        playerAction.PromptDiscard();
+            playerAction.PromptDiscard();
         }
     }
-
 
     public void DrawDone()
     {
@@ -348,7 +325,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Discard 
     public void DiscardPlayerCard(PlayerCard card)
     {
         if (card != null)
@@ -357,8 +333,6 @@ public class GameManager : MonoBehaviour
             cardUIManager.DiscardCard(card);
         }
     }
-
-    //Epidemic
 
     private void HandleEpidemic()
     {
@@ -386,8 +360,6 @@ public class GameManager : MonoBehaviour
             board.InfectCity(card.City, card.Color);
         }
     }
-
-    //Win/lose
 
     public void CureFound(DiseaseColor color)
     {
@@ -429,13 +401,6 @@ public class GameManager : MonoBehaviour
                 if (card != null)
                 {
                     player.DrawCard(card);
-
-                    // CardUIManager cardUIManager = FindAnyObjectByType<CardUIManager>();
-
-                    // if (cardUIManager != null && card.City != null)
-                    // {
-                    //     cardUIManager.ShowPlayerCard(card);
-                    // }
                 }
             }
         }
@@ -452,14 +417,14 @@ public class GameManager : MonoBehaviour
         if (players.Count == 4)
             return 2;
 
-        return 4; // for 1 player testing
+        return 4;
     }
 
     public void TestPlayer()
     {
         GameObject playerObject = new GameObject("Player " + (1));
         Player player = playerObject.AddComponent<Player>();
-            
+
         player.Initialize("Player 0", board.cityLookup["Atlanta"], board);
 
         players.Add(player);
@@ -472,7 +437,7 @@ public class GameManager : MonoBehaviour
         {
             actionText.text = $"Actions: {actionCount}";
         }
-        
+
         board.ShowDiseasedCities();
     }
 
@@ -481,7 +446,6 @@ public class GameManager : MonoBehaviour
         if (messageText != null)
         {
             messageText.text = message;
-            // Optional: clear after a few seconds
             CancelInvoke(nameof(ClearMessage));
             Invoke(nameof(ClearMessage), 3f);
         }

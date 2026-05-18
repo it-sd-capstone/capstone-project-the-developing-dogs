@@ -1,7 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-// Role for the Dispatcher.
-// The special ability can be added later when movement rules are built out more.
 public class DispatcherRole : Role
 {
     public DispatcherRole()
@@ -12,6 +10,6 @@ public class DispatcherRole : Role
 
     public override void UseSpecialAbility(GameBoard board)
     {
-        // Empty for now. Dispatcher ability logic will be added later.
+        //Compile errors so add this to fix
     }
 }
