@@ -18,7 +18,6 @@ public class InfectionPoolUI : MonoBehaviour
 
     private void Start()
     {
-        // Start all cures as NOT cured (dimmed)
         SetCureStatus(DiseaseColor.Blue, false);
         SetCureStatus(DiseaseColor.Yellow, false);
         SetCureStatus(DiseaseColor.Black, false);
@@ -56,7 +55,6 @@ public class InfectionPoolUI : MonoBehaviour
         if (target != null)
         {
             Color c = target.color;
-            c.a = cured ? 1f : 0.35f;   // bright when cured, dim when not
             target.color = c;
         }
     }

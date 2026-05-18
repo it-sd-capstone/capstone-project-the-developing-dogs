@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -28,14 +27,12 @@ public class GameBoard : MonoBehaviour
     [SerializeField] public RectTransform boardContainer;
     [SerializeField] private GameObject cityMarkerPrefab;
     private Image hasDisease;
-    City quarantineLoc;
 
     private CityCard cc;
     private GameManager gm;
     public PlayerAction pa;
 
     private Dictionary<City, GameObject> cityMarkers = new Dictionary<City, GameObject>();
-
     public Dictionary<Player, GameObject> playerMarkers = new Dictionary<Player, GameObject>();
     private Dictionary<City, Player[]> citySlots = new Dictionary<City, Player[]>();
 
@@ -56,7 +53,7 @@ public class GameBoard : MonoBehaviour
 
     private void GenerateCities()
     {
-        foreach(CityData data in citiesDB.cities)
+        foreach (CityData data in citiesDB.cities)
         {
             City city = new City();
             city.Init(data);
@@ -70,7 +67,7 @@ public class GameBoard : MonoBehaviour
 
         BuildCityLookup();
 
-        foreach(CityData cityData in citiesDB.cities)
+        foreach (CityData cityData in citiesDB.cities)
         {
             City city = cityLookup[cityData.cityName];
             foreach (var neighbor in cityData.neighbors)
@@ -101,7 +98,6 @@ public class GameBoard : MonoBehaviour
             RectTransform rect = marker.GetComponent<RectTransform>();
             rect.anchoredPosition = data.position;
 
-            // Set colour based on the city's disease type
             Image img = marker.GetComponent<Image>();
             if (img != null)
                 img.color = GetDisplayColor(data.diseaseColor);
@@ -115,7 +111,7 @@ public class GameBoard : MonoBehaviour
 
     public void InfectionPhase(List<City> infections)
     {
-        foreach(var city in infections)
+        foreach (var city in infections)
         {
             InfectCity(city, city.diseaseColor);
         }
@@ -123,27 +119,24 @@ public class GameBoard : MonoBehaviour
 
     public void InfectCity(City city, DiseaseColor disease, HashSet<City> outbreakChain = null)
     {
-        if(IsEradicated(disease)) return;
+        if (IsEradicated(disease)) return;
 
-        foreach (Player player in gm.players)
+        foreach (Player p in gm.players)
         {
-            if (player.RoleName == "Quarantine Specialist")
-                quarantineLoc = player.CurrentCity;
+            if (p.Role is QuarantineSpecialistRole qs)
+            {
+                if (qs.PreventsInfectionIn(city))
+                {
+                    return;
+                }
+            }
         }
 
         if (cubePool[disease] <= 0)
         {
             Debug.Log("No more disease cubes. You lose.");
             gm.LoseGame("You let the disease run too rampant");
-            return; 
-        }
-
-        if(quarantineLoc != null)
-        {
-            if (city == quarantineLoc || quarantineLoc.neighbors.Contains(city))
-            {
-                return;
-            }
+            return;
         }
 
         int currentCubes = city.GetDiseaseCount(disease);
@@ -151,7 +144,8 @@ public class GameBoard : MonoBehaviour
         if (currentCubes >= 3)
         {
             TriggerOutbreak(city, disease, outbreakChain);
-        } else
+        }
+        else
         {
             city.addCube(disease);
             cubePool[disease]--;
@@ -162,27 +156,27 @@ public class GameBoard : MonoBehaviour
 
     private void TriggerOutbreak(City city, DiseaseColor groundZeroColor, HashSet<City> outbreakChain)
     {
-        if(outbreakChain == null) outbreakChain = new HashSet<City>();
+        if (outbreakChain == null) outbreakChain = new HashSet<City>();
 
-        if(outbreakChain.Contains(city)) return;
+        if (outbreakChain.Contains(city)) return;
         outbreakChain.Add(city);
 
         outbreakCounter++;
-        
-        if(outbreakCounter >= maxOutbreaks)
+
+        if (outbreakCounter >= maxOutbreaks)
         {
             Debug.Log("Too many outbreaks. You lose.");
             gm.LoseGame("You suffered too many outbreaks");
             return;
         }
 
-        foreach(var neighbor in city.neighbors)
+        foreach (var neighbor in city.neighbors)
             InfectCity(neighbor, groundZeroColor, outbreakChain);
     }
 
     public void RemoveDisease(City city, DiseaseColor color)
     {
-        if(city.GetDiseaseCount(color) > 0)
+        if (city.GetDiseaseCount(color) > 0)
         {
             city.removeCube(color);
             cubePool[color]++;
@@ -193,7 +187,7 @@ public class GameBoard : MonoBehaviour
 
     public void CureDisease(DiseaseColor color)
     {
-        if(curePool[color]) return;
+        if (curePool[color]) return;
         curePool[color] = true;
         InfectionPoolUI pool = FindAnyObjectByType<InfectionPoolUI>();
         pool.SetCureStatus(color, true);
@@ -203,10 +197,10 @@ public class GameBoard : MonoBehaviour
     }
 
     public bool canMove(City from, City to) => from.IsConnectedTo(to);
-     
+
     public bool IsEradicated(DiseaseColor color)
     {
-        if(!curePool[color]) return false;
+        if (!curePool[color]) return false;
         int totalCubes = cities.Sum(c => c.GetDiseaseCount(color));
         return totalCubes == 0;
     }
@@ -219,8 +213,11 @@ public class GameBoard : MonoBehaviour
     }
 
     public void CheckWin()
-    { 
-        if (curePool[DiseaseColor.Red] && curePool[DiseaseColor.Blue] && curePool[DiseaseColor.Yellow] && curePool[DiseaseColor.Black])
+    {
+        if (curePool[DiseaseColor.Red] &&
+            curePool[DiseaseColor.Blue] &&
+            curePool[DiseaseColor.Yellow] &&
+            curePool[DiseaseColor.Black])
             gm.WinGame();
     }
 
@@ -251,10 +248,8 @@ public class GameBoard : MonoBehaviour
 
     private void OnCityClick(City city)
     {
-        // show city card
         cc.OnClick(city);
-    
-        // Handle action if any
+
         if (pa != null)
         {
             pa.OnCitySelected(city);
@@ -263,11 +258,18 @@ public class GameBoard : MonoBehaviour
 
     public void Highlight(City city)
     {
-        var outline = cityMarkers[city].GetComponent<Outline>();
-        outline.enabled = !outline.enabled;
+        if (cityMarkers.TryGetValue(city, out GameObject marker))
+        {
+            Outline outline = marker.GetComponent<Outline>();
+            if (outline != null)
+            {
+                outline.effectColor = Color.cyan;
+                outline.effectDistance = new Vector2(6f, 6f);
+                outline.enabled = true;
+            }
+        }
     }
 
-    // clear highlight from a specific city
     public void ClearHighlight(City city)
     {
         if (cityMarkers.TryGetValue(city, out GameObject marker))
@@ -288,7 +290,6 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    //Update player position visual
     public void UpdatePlayerPosition(Player player)
     {
         if (!playerMarkers.TryGetValue(player, out GameObject marker))
@@ -297,13 +298,11 @@ public class GameBoard : MonoBehaviour
         if (!cityMarkers.TryGetValue(player.CurrentCity, out GameObject cityMarker))
             return;
 
-        //Ensure this city has a slot array
         if (!citySlots.ContainsKey(player.CurrentCity))
             citySlots[player.CurrentCity] = new Player[4];
 
         Player[] slots = citySlots[player.CurrentCity];
 
-        //Remove player from ALL city slot arrays (in case they moved)
         foreach (var kvp in citySlots)
         {
             for (int i = 0; i < 4; i++)
@@ -313,7 +312,6 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        //Assign a slot for this player (first free)
         int assignedSlot = -1;
         for (int i = 0; i < 4; i++)
         {
@@ -328,24 +326,20 @@ public class GameBoard : MonoBehaviour
         if (assignedSlot == -1)
             assignedSlot = 0;
 
-        //Diamond offsets
         Vector3[] offsets = new Vector3[]
         {
-        new Vector3(0, -15, 0),   //slot 0 = front/bottom
-        new Vector3(-15, 0, 0),   //slot 1 = left
-        new Vector3(15, 0, 0),    //slot 2 = right
-        new Vector3(0, 15, 0),    //slot 3 = back/top
+            new Vector3(0, -15, 0),
+            new Vector3(-15, 0, 0),
+            new Vector3(15, 0, 0),
+            new Vector3(0, 15, 0),
         };
 
-        //Position pawn
         Vector3 basePos = cityMarker.transform.position;
         marker.transform.position = basePos + offsets[assignedSlot];
 
-        //Layering for pawns in city
         int cityIndex = cityMarker.transform.GetSiblingIndex();
         int baseIndex = cityIndex + 1;
 
-        //Ordering of pawns
         int[] order = new int[] { 3, 2, 1, 0 };
 
         int currentOffset = 0;
@@ -357,25 +351,23 @@ public class GameBoard : MonoBehaviour
             if (!playerMarkers.TryGetValue(p, out GameObject pawnGO))
                 continue;
 
-            //Pawn parented correctly
             pawnGO.transform.SetSiblingIndex(baseIndex + currentOffset);
             currentOffset++;
         }
     }
+
 
     // Update research station visual
     public void UpdateResearchStationVisual(City city)
     {
         if (cityMarkers.TryGetValue(city, out GameObject marker))
         {
-            // Enable research station visual on the city marker
             Image stationImage = marker.transform.Find("StationIcon")?.GetComponent<Image>();
             if (stationImage != null)
                 stationImage.enabled = true;
         }
     }
 
-    // Check if a disease is cured
     public bool IsCured(DiseaseColor color)
     {
         return curePool.ContainsKey(color) && curePool[color];
@@ -386,10 +378,17 @@ public class GameBoard : MonoBehaviour
         foreach (City city in cities)
         {
             hasDisease = cityMarkers[city].transform.Find("DiseaseHere")?.GetComponent<Image>();
-            if (city.GetDiseaseCount(DiseaseColor.Red) > 0 || city.GetDiseaseCount(DiseaseColor.Blue) > 0 || city.GetDiseaseCount(DiseaseColor.Yellow) > 0 || city.GetDiseaseCount(DiseaseColor.Black) > 0)
+            if (city.GetDiseaseCount(DiseaseColor.Red) > 0 ||
+                city.GetDiseaseCount(DiseaseColor.Blue) > 0 ||
+                city.GetDiseaseCount(DiseaseColor.Yellow) > 0 ||
+                city.GetDiseaseCount(DiseaseColor.Black) > 0)
             {
-                hasDisease.enabled = true;
-            } else hasDisease.enabled = false;
+                if (hasDisease != null) hasDisease.enabled = true;
+            }
+            else if (hasDisease != null)
+            {
+                hasDisease.enabled = false;
+            }
         }
     }
 }

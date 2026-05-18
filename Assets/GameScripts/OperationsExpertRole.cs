@@ -1,12 +1,11 @@
 using UnityEngine;
 
-// Role for the Operations Expert.
-// This role can be expanded later for research station and special action abilities.
 public class OperationsExpertRole : Role
 {
-    public new void Initialize(Player player)
+    public OperationsExpertRole()
     {
-        this.player = player;
+        RoleName = "Operations Expert";
+        RoleColor = new Color(0.4f, 0.4f, 0.4f);
         CanBuildStationForFree = true;
     }
 }
